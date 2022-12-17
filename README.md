@@ -9,7 +9,7 @@
 
 process:
 --
-* Pyrhon language：22.10.16-22.11.23
+* Python language：22.10.16-22.11.23
 * 算法：22.11.25-22.12.17  
 
 believe：

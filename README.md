@@ -11,6 +11,7 @@ process:
 --
 * Python language first：22.10.16-22.11.23
 * 算法 first：22.11.25-22.12.17  
+* git：22.12.27-  
 * html css js first：22.12.17-至今
 
 believe：

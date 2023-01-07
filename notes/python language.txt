@@ -1,0 +1,319 @@
+*** 重要地区通过该标记可检索
+本函数：
+input（）
+print（str，end=“#”）
+eval（）
+for…in…
+range（M,N,K）（注：K表示调位）
+if elif else
+def定义函数 return返回值
+while
+
+
+细小节处举例：
+切片s[::-1]				从s字符串开始到最后以-1的步长进行输出
+a,b=input().split(“”)		双变量输入
+A=m if...else n			单行选择
+**					次方
+len()					求长度
+sort()				排序
+pow(a,b)				平方
+字符串””或str()			str
+组合数据类型
+集合、序列、字典
+列表[]或list()			list
+元组()或tuple()			tuple
+字典{a:b,}或dict()  		dict
+集合{a,b,}或set()			set
+type(x)				检测x的类型
+*b     				def fact(n,*b)	可变参数
+lambda定义短函数（  f=lambda x,y:x+y    f(4,5)=9)	直接f函数
+globle 				#修改局部变量成全局变量	
+open(文件名，模式)	
+文件名.close()	
+sort	
+encoding=’utf-8’	Code bite
+key=lambda x:x[1]    （x代表局部整体）	
+
+try:					Try中异常时执行except					
+	...
+except:				不异常执行else
+	...
+else:
+	...
+finally:				Finally一定执行
+  	...	
+
+with open(‘file.path’(,encoding = ‘utf-8’)) as _file:	更文件名，并自带file.close()
+相当于try，finally
+
+***    str.endswith(str)	检测到即返回True
+
+raise+异常名+（异常介绍）   eg：
+					except ValueError as e:
+   					print("引发异常：",repr(e))	手动抛出异常
+					raise可用在if
+					手动在except抛出raise
+class A:
+def __init__(x,y):
+    self.x = x
+    self.y = y
+
+class B(A):
+   def __init__(x,y,z):
+        supor().__init__(x,y)  
+        self.z = z	supor().__init__(x,y)
+:
+包含类A全部
+并且执行A（x，y）
+
+***    enumerate(sequence(,start=?))	返回下标和数据，可设定下标初始值，一般用于for 结构
+[0 for _ in range(m)]				生成[0,0,0,0,0,0,0...]m个0
+
+
+python函数库
+turtle库：
+     setup（width，height，startx，starty）
+    goto（x，y）
+    circle（r，angle）
+    seth（angle）———setheading
+    left、right（angle）
+    fd、bk（d）———forward
+    penup（）———pu
+    pendown（）———pd
+    pensize（）
+    pencolor（str.color或RGB）
+    done（）
+
+time函数库：
+time()			计算机的内部时间值以浮点数形式展示
+				time.time()为1516939876.6022282
+ctime()			易读方式返回“字符串”时间
+				time.ctime()为“Fri Jan 26 12：11：16 2018”
+gmtime()			获取以计算机可处理的机器时间格式
+perf_counter()		测量时间差
+				start=time.perf_count为319.444
+				end=time.perf_count为819.444
+				start-end即为运行时间差500
+sleep(s)			休眠时间
+				time.sleep(3.3)即等待（休眠）3.3秒
+
+random函数库：
+seed(a)			random.seed(10)    产生种子10对应的序列
+random()			random.random()    0.0-1.0之间的随机小数
+randint(a,b)		random.randint(1,10)生成a-b之间的随机整数
+8
+randrange(m,n,k)		randrange(10,80,10)生成a-b之间以k为步长的随机整数
+60
+uniform(a,b)		random.uniform(10,100)生成a-b之间的随机小数
+13.2345434211434343
+choice(seq)			random.choice([1，2，3，4，5，6，7，8，9])
+8
+shuffle(seq)		s=[1,2,3,4,5];random.shuffle(s);print(s)  打乱
+[3,2,5,1,4]
+
+jieba函数库：
+jieba.lcut(s)			精确模式，返回一个列表类型的分词结果
+jieba.lcut(s,cut_all=True)	全模式，存在冗余
+jieba.lcut_for_sear ch(s)	搜索引擎模式，存在冗余
+jieba.add_word(w)			向词典增加新词w
+
+时间格式化
+strftime(tpl,ts)
+tpl:模板以定义输出效果
+ts：计算机内部时间类型变量
+    （一般为gmtime式）		time.strftime(“%y-%m-%d %h:%m:%s”,time.gmtime)
+strptime(str.tpl)	
+
+
+数值运算函数
+abs（x）		绝对值			abs（-10）为10
+divmod（x，y）	商余			divmod（10，3）为（3，1）
+pow（x，y，[z］）	幂余			pow（3，pow（3，99），10000为4587）
+round（x，[d］）	四舍五入		round（-10.123，2）为-10.12
+max（x，y，…）	最大值			max（1，9，8）为9
+min（x，y，…）	最小值			min（1，9，8）为1
+int（x）、float（x）整数与浮点数
+complex（x）		变复数			complex（4）为4+0j
+
+
+format格式化字符串类型({:->10,.7f})
+			：<填充><对齐><宽度>	<,><.精度><类型>
+
+
+集合操作符    ((a,b,)或set())
+S|T				并
+S-T				差
+S&T				交
+S^T				补（非相同元素）
+S<=T or S<T			判断并返回True或False
+S>=T or S>T			判断并返回True或False
+S|=T				并，更新S
+S-=T				差，更新S
+S&=T				交，更新S
+S^=T				补，更新S
+集合处理方法
+S.add(x)				如果x不在集合中，将x添加到s
+S.discard(x)			移除S中的x，如果x不在S中，不报错
+S.remove(x)				移除S中的x，如果x不在S中，报错(keyerror)
+S.clear()				移除S中的所有元素
+S.pop()				随机返回S的一个元素，若S为空，报错(keyerror)
+S.copy()				返回集合S的一个副本
+len(S)				返回个数
+X in S				判断
+X not in S 				判断
+set(x)				将其他类型变量x转化为集合类型
+
+序列操作符     (序列：字符串，列表，元组)  
+x in s				判断
+X not in s				判断
+s + t					连接两序列
+s*n或n*s				复制n次
+s[i]					索引第i个元素
+s[i:j]或s[i:j:k]			切片s中i到j以k为步长的元素序列
+序列类型通用函数和方法    
+len(s)				返回长度（即个数）
+min(s)				最小元素（需可比较）
+max(s)				最大元素（需可比较）
+S.index(s)或S.index（x,i,j)	返回s从i到j出现x的第一次位置
+S.count(x)				返回出现x的总次数
+S.sort(reverse=True)（或（reverse=False)	从大到小排序(从小到大）
+
+字符串处理函数
+len（x）长度					len（“一二三456”）为6
+str（）字符串					str（1.23四）为“1.23四”
+hex（x）十六进制				hex（425）为“0x1a9”
+oct（x）八进制				oct（425）为“0o651”
+chr（u）编码转字符				chr(x)=Unicode字符串
+ord（x）字符转编码				ord（str）= x
+
+
+
+字符串处理方法
+str.lower（）或str.upper（）		返回字符串副本，全字符大写或小写
+str.split（sep=None，x），默认“ ”
+   以sep做断开标志，去x下断开		返回一列表,用括号内隔开，
+						“AB，C，D”.split（“，”）为［‘AB’，‘C’，‘D’］
+						“ab cc”.split(“ ”)为[‘ab‘，‘cc’]
+str.count（sub）				返回子串出现次数
+						“an apple”.count（“a”）为4
+str.replace（old，new）替换返回字符串	“python”.replace（“n”“n123.io”）为“python123.io”
+str.location（width，“#”）
+＊location可为ljust、rjust、center	“python”.center（10，“=”）为“===python===”
+str.strip（chars）				去掉左右侧chars列出字符
+不会越字符删中间的				“ python= ”.strip（“ pn=”）为“ytho”
+						strip还分lstrip和rstrip，删去头部或尾部
+*** 
+str.join（iter）				在除最后一个元素间增加str
+“、”.join([“123”,”kkk”])			为 123、kkk
+“”,join([“123”,“kkk”])			为123kkk    （均去掉引号）
+“，”.join(“12345”) = 1，2，3，4，5
+
+
+
+列表类型操作函数和方法       
+ls[i]=x				替换ls中的第i元素为x
+ls[i:j:k]=lt			返回用列表lt替换 ls切片 后对应的列表
+del ls[i]				删除s中的第i元素
+del ls[i:j:k]			删除s中第i到j以k为步长的元素
+ls += lt				增加列表lt，并更新ls
+ls *=n				将ls重复n次，并更新ls
+ls.append(x)			列表ls最后增加一个x
+ls.clear()				删除所有元素
+ls.copy()				生成新列表，复制ls中所有元素
+ls.insert(i,x)			在列表第i位置插入x
+ls.pop(i)				去除第i元素并删除ls的该元素
+ls.remove(x)			将出现的第一个x删除
+ls.reserve()			将ls中元素反转
+
+字典类型操作函数和方法     ({}或dict())
+del d[k]				删除键k对应的数值
+k in d				判断序号
+d.keys()				返回所有键的信息
+d.valus()				dict_values类型，返回所有值的信息
+d.items()				返回所有键值的信息
+d.get(k,<default>)		若键k存在返回对应值，不在则建立k并返回<default>值
+d.pop(k,<default>)		若键k存在取出对应值，不在则返回<default>值
+d.popitem()				随机取出一个键值对，以元组形式返回
+d.clear()				删除所有键值对
+len(d)				返回元素个数
+
+文件打开方式与数据的文件写入
+‘r’					只读模式
+‘w’					覆写模式
+‘x’					创建写模式
+‘a’					追加写模式
+‘b’					二进制文件模式
+‘t’					文本文件模式
+‘+’					与r/w/x/a一同使用，在原功能上同时增加读写功能
+
+文件内容的读取
+<f>.read(x)				读入全部内容，如果有x，读入前x长度
+<f>.readline(x)			读入一行内容，如何有x，读入改行前x长度
+<f>.readlines(x)			读入所有行，以每行为元素形成列表；如果有x，读入前x行
+<f>.write(s)			向文件写入一个字符串或字节流
+<f>.writeline(ls)			将一个元素全为字符串的列表写入文件，取消字符串间的逗号
+<f>.see(0\1\2)			改变文件指针位置：0-开头，1-当前位置，2-结尾
+
+wordcloud库（import wordcloud as q)(WordCloud as p)
+width					生成图片宽度   w=q.p(width=600
+height				生成图片高度   w=q.p(height=400)
+min_font_size			字体的最小字号 w=q.p(min_font_size=10)
+max_font_size			字体的最大字号 w=q.p(max_font_size=20)
+font_step				字体差值       w=q.p(font_step=2)
+font_path				字体文件路径   w=q.p(font_path=”msyh.ttc”)
+max_words				显示的最大单词数量q.p(max_word=20)
+stop_words				不显示列表     w=q.p(stop_words={“python”})
+mask					指定词云形状 	from scipy import imread
+             			  Mk = imread(“pic.png”)
+              			 W=q.p(mask=Mk)
+
+background_color			指定背景颜色   w=q.p(background_color=”white”)
+w.generate(“ “.join(words))	以w为图，生产加入文字词云
+w.to_file(“图片名”)		生成图片
+
+os包的用法
+
+os.name	
+os.getcwd()				得到当前工作目录
+os.listdir()			返回指定目录下的所有文件和目录名
+os.mkdir()				创建新目录，path为一个字符串，相当于新目录的路径
+os.rmdir()				删除目录，path为一个字符串，相当于要删目录的路径
+os.path.split()			函数返回一个路径的目录名和文件名
+os.path.splitext()		分离文件名和拓展名
+os.path.dirname(_file_)		获取当前文件的所在路径   （多次嵌套获取层级路径）
+os.path.isfile()			判断对象是否为文件，返回True或False
+os.path.isdir()			判断对象是否为目录，返回True或False
+os.chdir()				修改目录到指定目录
+os.system()				执行命令
+os.path.join(path,name)		连接目录和文件名
+
+
+1.enumerate(sequence(,start=?))	
+	返回下标和数据，可设定下标初始值，一般用于for 结构
+2.str.upper()  大写
+  str.lower()  小写
+3.set  删除重复数据，返回集合
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	

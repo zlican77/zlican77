@@ -289,4 +289,31 @@ os.system()				执行命令
 os.path.join(path,name)		连接目录和文件名
 
 
+1.enumerate(sequence(,start=?))	
+	返回下标和数据，可设定下标初始值，一般用于for 结构
+2.str.upper()  大写
+  str.lower()  小写
+3.set  删除重复数据，返回集合
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	

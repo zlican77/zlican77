@@ -268,10 +268,10 @@ css三角：
 		height: 0;
 		border: 10px solid transparent;
 		border-bottom-color: red;
-		}    得出红色倒三角
+		}    得出红色倒三角  底部
 
 鼠标样式：    鼠标移到内容上变成光标
-	li {curse: default or pointer or move or text or not-allowed;}
+	li {cursor: default or pointer or move or text or not-allowed;}
 		    小白（默认）   小手     移动       文本        禁止
 
 轮廓线outline:
@@ -428,8 +428,8 @@ LOGO SEO优化：
 			}
 
             <div class="clearfix">
-**	盒子模型：content-box=width+padding+border;border-box=width
-		box-sizing: border-box;    最终盒子大小为width;
+*****	盒子模型：content-box=width+padding+border;border-box=width
+*****		box-sizing: border-box;    最终盒子大小为width;
 
 	calc函数：+-*/
 		width: calc(100% + 30px);

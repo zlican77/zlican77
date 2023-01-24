@@ -1,0 +1,560 @@
+this指向	this是在运行的时候被绑定的,和被定义的位置无关
+	1.函数直接调用：window
+	2.对象值调用:obj
+	3.
+this绑定规则：
+	1.默认绑定：独立函数调用->window。（*严格模式下，独立函数调用this指向undefined）
+	2.隐式绑定：由对象发起的
+	3.显式绑定：foo.call(指向对象)、foo.apply(指向对象)、bind  (严格模式下直接指向简单数据）
+	 	    指向简单类型会被封装成包装类型
+	4.new绑定：指向new创造的对象
+绑定规则优先级：	new绑定>bind>call、apply>隐式绑定>默认绑定;	
+			new不可以和call、apply同时使用，new>bind显示
+
+内置函数调用this绑定（根据经验)
+	定时器->window
+	监听->对象
+	forEach->每个window或第二参数
+
+创建对象的方法：
+	1. var obj = {...}
+	2. var obj = new foo()
+new作用:
+	1.创建新的空对象
+	2.将this指向这个空对象
+	3.将函数的显示原型赋值给该对象作为它的隐式原型
+	4.执行代码函数体中的代码从而给空对象添加属性和方法
+	5.没有显示返回非空对象时，默认返回这个对象
+new作用：
+	1.内存中创造空的对象
+	2.this指向空对象
+	3.将函数的显示原型赋值给该对象作为它的隐式原型
+	4.执行构造函数里的代码，给空对象添加属性和方法
+	5.返回该对象
+
+call与apply函数调用函数
+	call函数
+	第一个参数：绑定this
+	后序参数：foo的形参，多参数形式写入
+		foo.call('call', 'a', b, c)
+apply函数
+	第一个参数：绑定this
+	第二个参数：foo的形参，数组形式写入
+		foo.apply('apply',['a',b,c])
+
+了解bind函数：创建一个绑定函数(新函数)BF
+	var bar = foo.bind(obj)
+	bar()
+	var bar = foo.bind(obj,'a', b, c)
+
+
+this规则之外（普通模式下）
+	1.显式绑定null和undefined时，使用默认绑定。foo.call(null)->window
+	2.间接函数引用：(obj2.foo = obj1.foo)该表达式返回foo函数
+		       (obj2.foo = obj1.foo)()->window
+	3.箭头函数arrow function  本身没有this,去上层作用域找this
+
+forEach函数：为数组每一项执行一次callbackfn
+	Array.forEach(callbackfn,thisArg)
+
+
+arrow function:	参数（item, index, array）
+	函数表达式var foo = function() {} 的变形： 
+	完整写法： var foo = () => {}
+	特点：	1.不存在this/arguments属性
+	   	2.不能作为构造函数被new使用，没有原型
+	简洁写法：
+		1.如果只有一个参数，（）可以省略
+		eg:	var nums = [20,30,15];
+			var newNums = nums.filter(item => {
+				return item % 2 === 0 
+			})	
+		2.如果函数体中只有一行执行代码，{}可以省略
+		3.如果只有一行执行代码，这行代码表达式的结果会作为函数返回值默认返回，不要return
+		4.如果默认返回值是对象，对象必须加括号
+
+箭头函数实例：
+	var nums = [20,30,11,15,111]
+	var result = nums.filter(items => items % 2 === 0)
+			    .map(items => items * items)
+			    .reduce((prevValue,item) => prevValur + item)
+	console.log(result) 
+
+
+深入浏览器运行原理
+DNS域名解析：domain name system  解析域名成IP地址
+浏览器内核-页面渲染引擎
+
+布局：DOM树与CSSOM树->匹配计算成Render树->建构位置、layout tree->paint放置布局->display
+	content->match selectoers->compute style->construce frames->lay out->paint->composite
+回流和重绘：
+	回流reflow------消耗大性能
+	第一次确定节点的大小和位置称之为布局
+	之后对节点的大小、位置修改重新计算称之为回流
+		引起回流：	1.DOM改变 
+			 		2.改变布局（width、font-size等）
+			  		3.resize窗口尺寸
+			  		4.调用getComputedStyle方法获取尺寸位置信息（offsetHeight...）
+							（回流避免其他干扰，获得精确数据）
+	重绘repaint------消耗小性能
+	第一次渲染内容称之为绘制
+	之后重新渲染称之为重绘
+
+		引起重绘：修改文字色，样式，边框色，背景色等
+
+回流会引起重绘
+	避免回流
+		一次性修改样式：csstext、js动态class
+		避免频繁DOM操作（可在一个display:none的元素上进行操作最终显示出来）
+		（创建一个documentFragment在上面应用所有的DOM操作，最后添加到window.document)
+		避免通过getComputedStyle方法获取尺寸位置信息（offsetHeight/scrollTop)
+		运用position:fixed操作
+composite合成(每个图层单独渲染)
+	标准流->layout tree-> render layer->合成层1
+	特殊属性->render layer->单独合成层
+	特殊属性会形成单独合成层，可以利用GPU来加速绘制，不会影响合成层1
+		特殊属性：	3D transform
+			 		video canvas iframe
+			  		transform做动画
+			  		opacity动画转化
+			    	position:fixed
+			  		will-change
+分层确实能优化性能，但是以内存为代价，不应过渡使用
+
+script和页面解析的关系
+	html遇到js会立马停止html解析，全力加载js（阻塞）
+	原因：会和paint渲染起冲突
+
+为了解决js阻塞问题，js中有两个属性defer和async
+	defer属性:
+		1.脚本由浏览器下载，但是不会阻塞DOM Tree的构建
+		2.如果脚本提前下好，它会等待，在DOMContentLoaded事件之前
+		  执行defer中脚本，DOM树最终构建
+		3.defer脚本按顺序进行，DOM的运用灵活，一定可以操作DOM
+		4.defer脚本推进放在head
+		5.defer作用于外部脚本
+	async属性：
+		1.与defer差不多
+		2.差别：	1，不一定按顺序执行async，立即执行
+			 	2，不一定在DOMContentLoaded前，可能在DOM树后
+			 	3.用于独立脚本，对DOM没有依赖
+
+js运行原理
+V8引擎：C++编写、Google开源、js和WebAssembly引擎、用于Chrome和Node.js等
+	跨平台、可嵌入C++应用程序
+
+	Parse(语法分析）模块：js代码->AST树（抽象语法树）----taken记号化和scanner扫描器，
+	Ignition（点火）解释器：AST->字节码（终）由CPU运行，同时帮助TurboFan优化收集信息
+	TurboFan:优化器  可将字节码->CPU的直接执行的机器码（存在热点函数优化）
+		Ts更加适合V8引擎底层优化的机器码，提高性能，js不统一性，太自由
+ 
+ECMA官网
+	ES3 GO VO AO	global object/variable object(变量对象)
+	ES5 VE LE		variable environment
+	TC39  VR
+
+
+JS执行原理
+一旦要执行’新作用域代码‘就会创建一个执行上下文
+在第一个执行上下文进入前，先创建一个GO，里面包含Math，getInterval,Array等
+
+执行上下文栈：Execution Contexts Stack
+每个执行上下文关联着1.VO;2.scope chain;3.this·
+	每个执行上下文都对应着一个变量对象VO
+	全局执行上下文的VO对应的就是GO（global object）
+	在VO中，var声明变量（实例化） 会被提升，函数也会被提升（c语言中不会)进VO
+		  函数在VO中被声明解析，且地址指向堆中创建的函数对象（带有name，length、scopes等等属性）
+		  声明的对象不会指向堆创建对象，只有函数在代码执行开始前可以
+
+在执行到一个函数时，就会创建一个函数执行上下文----AO取代了VO（比VO多arguments，参数变量）
+	当进入一个函数执行上下文时，会创建一个AO对象（Activation Object）
+	这个AO对象会使用arguments作为初始化（即本身存在arguments）
+	这个AO对象会作为执行上下文的VO来存放变量的初始化
+
+代码在执行上下文栈中执行，去VO中查找变量值，且VO会是执行上下文的映射
+当函数在栈中被执行时，则开辟新的AO（VO）作为该函数中的变量对象
+
+作用域和作用域链
+eg:	var message = 'global message'
+	function foo() {
+		console.log(message)
+		var message = 'foo message'
+	}
+	foo()
+	//最终输出是undefined
+
+eg:	var message = 'global message'
+	function foo() {
+		console.log(message)
+	}
+	foo()
+	//返回global message
+作用域：定义变量的区域
+当进入一个执行上下文时，一个新作用域链会被创建关联
+作用域链的初始化和代码类型有关
+作用域链式是一个对象列表，用于变量的求值
+代码类型：全局代码（GO）；局部代码
+
+*	函数在被定义解析时就已经确定完作用域链（回调）（确定完闭包）
+	函数的函数对象里的scopes会在堆里开辟scope chain对象
+
+变量值查找顺序VO->作用域链    (VO就是本身作用域)
+闭包以类数组的形式保存在作用域链中，作用域链[1]就是上层闭包（含有作用域变量）（指向VO）
+
+个人理解：
+作用域链具有追溯的特性，闭包有，VO没有，而查找变量在上层闭包（环境）的VO中查找
+即是闭包将VO带下来的
+
+错误语法：没有var声明直接赋值，相当于全局变量
+
+
+内存VO、作用域链的存在，很大一部分原因是为了闭包
+
+内存生命周期：
+	1.分配申请需要的内存
+	2.使用分配的内存
+	3.不需要使用时，对对其进行释放
+手动管理内存：C/C++/早期的OC
+自动管理内存：Java/JS/Python...
+
+JS 原始数据类型->栈（代码在栈中进行）
+   复杂数据类型->堆
+
+垃圾回收GC:Garbage Collection
+GC算法：
+	1.引用计数：Reference counting
+		用于ios中：
+			有对象指向它时，对象引用+1
+			retain Count: 0 时，释放
+		弊端：产生循环引用
+*	2.标记清除：mark-Sweep5
+		用于js引擎，根对象=window（Root Object）
+		核心思想：可达性（Reachability）
+		过程：	设置了一个根对象，会定期从根开始，找所有从根开始有引用到的对象，
+			对于没有引用到的对象，就认为是不可用对象，清除
+		很好的解决了引用计数中的循环引用问题
+	3.优化手段----标记整理：Mark-Compact
+		将保留对象搬运汇集到连续的内存空间，从而整合空闲空间，避免内存碎片化(放大内存）
+	4.优化手段----分代收集：Generational collection
+		许多新生对象出现，完成工作就会死去，需要频繁检查（新生代）
+		逐渐变旧的对象会进入旧生代，检查频率降低
+	5.优化手段----增量收集：将垃圾收集在工作分及部分开做（减小延时）
+	6.优化手段----闲时收集：垃圾收集器只会在CPU空闲时尝试运行，以减少对代码的影响
+
+*****
+闭包
+	js是支持函数式编程的，函数是最重要的，趋向于函数式编程
+ 	支持头等函数：函数被当作头等公民
+  		   	  函数可以作为另一个函数的参数，也可以作为另一个函数的返回值来使用
+
+闭包Closure:又叫词法闭包、函数闭包
+定义：	1.实在支持头等函数的编程语言中，实现词法绑定的一种技术
+	2.现实上是一个结构体，储存了一个函数和一个关联的环境（相当于一个符号查找表）
+	3.闭包和函数的最大区别在于：当捕捉闭包时，它的自由变量会在捕捉时被确定
+					  这样即使脱离了捕捉的上下文，它也能照常运行
+闭包通过作用域链实现！
+闭包可以让你在一个内层函数中访问其外层函数的作用域
+在JS中，每当创建一个函数，闭包就会在函数创建的同时被创建出来（函数+作用域链）
+
+一个普通函数，如果可以访问外层作用域的自由变量，那么这个函数和函数周围环境就是一个闭包
+广义：js中函数都是闭包
+狭义：js中一个函数，如果访问了外层作用域的变量，那么它就是一个闭包
+
+闭包内存泄露：
+	对于那些我们永远不再使用的对象，GC不能判断我们是否还会使用，根据标记清除算法
+	那些我们永不再使用的对象仍然会被保留着（adder8=’对象‘，存在指向即保留），内存没有释放
+解决方法：手动释放内存  adder8 = null,消除了对对象的指向，GC算法执行
+
+个人理解：随用随有就表明内存占据，有而无用就叫内存泄漏
+	   彻底断开指向就是解决方法
+
+浏览器优化：AO不使用的属性会被优化释放
+
+函数对象的属性
+1..name	获取函数名称
+2..length	获取函数形参个数(剩余参数，赋值参数不算在内)
+
+...剩余参数：	eg:...args		...(自己命名)  args为数组形式
+
+
+arguments:
+	不是数组，是类数组对象，不能使用filter（）方法
+	是可迭代对象
+arguments(可迭代对象)转数组
+	1.var newArguments = []
+	  for (var arg in arguments) {
+		newArguments.push(arg)
+	  }
+	2.var newArgs1 = Array.from(arguments)
+	3.var newArgs2 = [...arguments]展开可迭代对象遍历
+	4..slice（startnum,endnum）
+	    原理：截取slice自己内部的this,截取后this直接返回值，对象只做获取this作用
+	  应用：var newArgs = [].slice.apply(arguments)
+			(用[]来调用slice,再用apply绑定this)
+箭头函数不绑定arguments，会去上层作用域查找arguments
+
+函数剩余参数rest:
+	...语法，自己命名，以数组形式存储，参数没有时即是数组形式的arguments
+	需要写在其他参数的最后
+
+纯函数Pure：函数式编程中的概念
+	react中组件被要求像是一个纯函数（为什么是像，因为还有class组件）
+	redux中有一个reducer的概念，也是要求必须是一个纯函数
+		有助于理解框架
+	定义：
+		若一个函数符合以下条件，那么这个函数被称为纯函数
+			1.此函数在相同的输入值下，需产出相同的输出（意味着不能使用闭包，不被外部影响）
+			2.函数的输出和输入值以外的其他隐藏信息或状态无关，
+			  也和I/O设备产生的外部输出无关
+			3.该函数不能有语义上观察的函数副作用，如‘触发事件’'修改外部变量’‘修改参数’等
+		（确定的输入一定产生确定的输出，函数不能产生副作用，即不能管太多，手不能伸到外面）
+副作用:表示在执行一个函数时，除了返回函数值之外，还对调用函数产生了额外影响，
+	 比如修改了全局变量，修改参数或者改变外部的储存
+*副作用往往是产生bug的温床
+
+纯函数体现：
+	slice：取得this（指向对象），截取this（拷贝）进行返回，而不对原数组做任何修改
+非纯函数体现：
+	splice：会修改原数组（即利用副作用）
+纯函数作用：
+	1.安心的写，不需要关心外层作用域，只要注意输入即可
+	2.安心的用，确定的结果产生确定的输出
+
+react中无论是函数还是class都必须像纯函数一样，保护它们的props不被修改
+
+柯里化Currying：函数式编程中的概念
+	是技术，是把接收多个参数的函数，变成接受一个单一参数的函数，并且返回接受余下
+		 的参数，而且返回结果的新函数的技术
+	eg：普通函数function foo(x,y,z) {}······foo(10,20,30)
+	柯里化后   function foo1(x) { return function foo2(y) { return function foo3(z) {}}}
+		    ······foo1(10)(20)(30)
+		柯里化--箭头函数：var a = x => y => z => console.log(x + y + z)
+	总结：只传递给函数一部分参数来调用它，让它返回一个函数去处理剩余参数
+		柯里化只是把函数做了一个转化foo(x,y,z)->foo(x)(y)(z)柯里化函数
+
+了解自动柯里化：
+柯里化优势：
+	1.职责单一
+	2.参数复用
+
+组合函数&封装函数
+
+了解with语句：扩展了一个语句的作用域链
+	with (obj) { console.log(message) }
+了解eval函数：允许执行一个代码字符串，最后一条语句做返回值
+	字符串容易泄露，被攻击，同时不会被turbofan优化
+
+认识严格模式Strict Mode:
+	1.抛出静默错误
+	2.JS引擎可以做更多优化
+	3.禁用了ES未来版本可能会定义的语法
+开启：支持粒度化的迁移----“use strict”
+	在文件或函数开头开启
+
+严格模式对代码的限制：
+	1.无法意外创建全局变量
+	2.抛出静默错误异常
+	  （Object.defineProperty(obj,'name',{writable:false})
+	3.试图删除不可删除的属性抛出错误
+	 （Object.defineProperty(obj,'name',{Configurable：false})
+	4.不允许函数参数名称重复
+	5.不允许0开头（旧时）的八进制语法（0o八进制新语法可以）
+	6.不允许使用with
+	7.eval不能为上层引用变量（可以访问，不能修改）
+	8.this不会将普通数据类型转成对象类型，直接输出，也可以直接绑定undefined和null
+	9.直接引用函数，this不绑定window，为undefined
+
+对象属性的控制
+属性描述符：对一个属性进行比较精准的操作控制
+	方法：Object.defineProperty(obj,prop,{}（descriptor）)
+		返回值：修改后的对象
+	数据属性描述符：
+	true	1.Configurable--可配置的，对应着delete，设置等
+			通过属性描述符添加属性时，Configurable为false
+	false	2.enumerable--枚举。用Object.keys(obj)查看，for in 不可枚举
+	false	3.writable--写入    false->只读属性
+		4.value：‘我‘      告诉js引擎返回该.name返回‘我’
+
+	存取属性描述符：
+	true	1.Configurable--可配置的，对应着delete，设置等
+			通过属性描述符添加属性时，Configurable为false
+	false	2.enumerable--枚举。用Object.keys(obj)查看，for in 不可枚举
+		3.set:function(value){ 	存时生效  obj.name = 'value'   监听
+			console.log(value)}
+		4.get:function(){}      	取时生效  obj.name		  监听
+了解拓展：
+多个属性描述符
+	方法2：Object.defineProperties(obj,{,{},{}})
+获取对象的属性描述符：Object.getOwnPropertyDescripteor(obj,'key')
+			 Object.getOwnPropertyDescripteors(obj)
+阻止对象扩展描述符:Object.preventExtensions（obj）
+密封描述符（密封）Object.seal(obj)----configurable
+冻结对象Object.freeze（obj）----writable
+
+*****
+对象的原型：内置属性[[prototype]]（不可直接引用）（隐式原型）
+	普通对象都有原型，且其类型为object
+	获取对象原型
+		1.浏览器加的：obj.__proto__
+		2.标准Object.getPrototypeOf(obj)
+原型的作用
+	当我们通过引用对象[[get]]方式获取一个属性对应的value时，会先在自己的对象中查找
+	，如果有返回值，如果没有，那么会接着在原型对象中查找
+
+函数的原型foo.prototype（显示原型）
+作用：将构造函数new成对象时，赋给对象隐式原型
+	避免直接创建多个重复对象，将方法放到原型上
+
+f.prototype.constructor == f
+
+直接创建原型对象
+	Person.prototype = {
+		name = 'why',
+		running = () => {},
+		constructor = Person
+		}
+	原函数原型的constructor不可枚举
+	可用Object.defineProperty(Person.prototype,'constructor',{value: Person})
+
+函数式编程：万物皆可函数
+面向对象->编程方式：万物皆可对象
+三大特性：封装、继承、多态、（抽象）
+
+原型链：原型对象有原型，除非原型对象等于null，否则会一直查询下去
+Object显示原型的原型__proto__为null，即{}.__proto__.__proto__ == null
+
+函数.protopyte.__proto__ == Object.prototype即Object为所有对象的父级
+
+继承就是在原型链顶层放置，实现继承
+利用原型链实现方法的继承
+借用构造函数实现属性继承
+
+steal继承属性
+	Person.call(this,name,age,height)
+
+子父继承工具函数（寄生组合式继承）
+	function createObject(o) {
+		function F() {}
+		F.protorype = o
+		return new F()
+	}
+	function inherit(Subtype,Supertype) {		//寄生式函数
+		Subtype.prototype = createObject(Supertype.prototype)
+		Object.defineProperty(Subtype.prototype,'constructor',{
+		enumerable: false,
+		configurable: true,
+		writable: true,
+		value: Subtype
+		})
+	} 
+
+Object为所有类（包括函数）的祖级（原型链）
+
+对象判断方法：
+	1.hasOwnProperty()	是否在当前对象上
+	2.in		判断是否存在
+	3.for in 	遍历，也会遍历原型上的key
+	4.instanceof 判断实例（是否存在对应的一个原型链）
+		对象于构造函数的关系继承
+	5.isProtorypeOf
+		对象之间的关系继承
+
+
+ES6实现继承
+原型链继承关系图
+
+
+
+
+
+class方式定义类
+
+
+
+
+extends实现继承
+
+
+
+
+Babel的ES6转ES5
+
+
+
+
+
+
+面向对象多态理解
+
+
+
+
+
+ES6对象的增强
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

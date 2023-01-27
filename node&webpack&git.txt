@@ -1,4 +1,4 @@
-  node  内部包括V8引擎(C++)、libuv中间层(C)、操作系统等
+node  内部包括V8引擎(C++)、libuv中间层(C)、操作系统等
 	编写node语言：#C/C++/js
 架构：js程序->V8->(node.js)->libuv->操作系统
 	循环回调->(node.js)->V8->（回调）js

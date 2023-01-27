@@ -18,7 +18,7 @@ this绑定规则：
 
 创建对象的方法：
 	1. var obj = {...}
-	2. var obj = new foo()
+	2. var obj = new foo() 
 new作用:
 	1.创建新的空对象
 	2.将this指向这个空对象

@@ -9,9 +9,11 @@
 
 process:
 --
-* Python language first：22.10.16-22.11.23
-* 算法 first：22.11.25-22.12.17  
-* html css js first：22.12.17-至今
+* Python language：22.10.16-22.11.23
+* algorithm：22.11.25-22.12.17  
+* node/webpack/git：23.01.16-23.01.23
+* html/css/js：22.12.17-至今  
+* vue3：23.01.01-至今
 
 believe：
 --

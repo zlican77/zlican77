@@ -366,6 +366,7 @@ git fetch <name>/<branch>	连接远程分支
 git checkout --track <name>/<branch>	创建并跟踪远程同名分支
 
 git branch --set-upstream-to=<name>/<branch>	建立跟踪分支/上游分支
+git config --global http.sslVerify "false"	解决ssl问题10054
 git config push.default upstream			配置push.config
 git pull --allow-unrelated-histories		没有common base的合并
 git push

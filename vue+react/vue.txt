@@ -1,0 +1,500 @@
+vue:渐进式js框架，声明式编程
+<script src='https://unpkg.com/vue@next'></script>
+const app = Vue.createApp({
+	template: '<h2> hello world</h2>'
+})
+app.mount('#app')
+
+插值语法：{{title}}
+
+<li v-for='item in moves'>{{item}}</li>
+
+data属性
+	1.必须传入函数
+
+模板语法template:基于HTML的模板语法
+	1.Mustache双大括号语法：{{}}（插值语法）
+		可写表达式（有返回值），不可写语句（无返回值）
+		可调用methods函数	
+
+	2.指令
+	1）v-once(了解):只渲染一次（本身渲染）
+	2）v-text(了解):显示文本
+	3）v-html(了解):解析html属性
+	4）v-pre(了解):用于跳过Mustache
+	5）v-cloak(了解):渲染完毕前先隐藏掉
+		必须搭配使用<style>[v-cloak] {display: none;}</style>
+
+	6）v-memo='[]'（理解）:做记忆对比，如果相同则直接跳过整个操作
+	
+7）v-bind(重要):专门用来绑定属性，href/src
+		用法：v-bind:属性=‘变量’
+		简写：：属性=‘变量’
+	class绑定
+		对象语法:class='{active: false}'
+		动态绑定class与普通class可用同时使用
+
+		数组语法:class='["active",data变量名，{对象语法}]'
+	style绑定
+		对象语法（驼峰命名法，字符串形式）:style='{color: isRed}'
+		数组语法（了解）
+	属性名绑定(了解)
+		:[]=
+	直接绑定一个对象（重要）（给组件传递参数）
+		v-bind='对象名'
+
+8）v-on:@
+	1.@click.stop等修饰符
+	2.参数传递：@click='increament('me',$event)'
+
+条件渲染（判断）：
+	1.v-if='条件'  &&  v-else-if  &&  v-else
+	2.v-show:和v-if类似,但不支持template,不支持v-else
+
+template元素（标签）
+	作用：包裹整体。填写指令（类似于小程序中的clock）
+
+v-if与v-show的本质区别
+	v-if:不显示时不会渲染DOM树,不存在元素（频繁操作DOM会消耗大性能）
+	v-show:不显示时，修改整体display:none（仅重新渲染）
+
+v-for(重要)
+	基本格式：<div v-for='item in 数组'></div>
+		  <div v-for='(item,index) in 数组'></div>
+
+	支持类型：可迭代对象、数组、对象、字符串、数字
+	
+	遍历对象：<li v-for='(value,key,index) in info'><li>
+			一个参数为value，第二个为key
+
+数组更新检测：
+	push,pop,shift,unshift,splice,sort,reverse
+
+key属性
+	：key=‘id’
+	作用：用在虚拟DOM算法（对比key，进行复用，减少对DOM的操作）
+
+	1.VNode（virtual node）虚拟节点
+		无论是元素还是组件，在vue中都叫vnode
+		本质是js对象
+		template->VNode->真实Node
+			     VDOM树->DOM树
+	作用：
+		1.方便diff算法（节点复用，提高性能）
+		2.方便跨平台，多方向转化（js对象）
+
+复杂数据处理：
+	1.mustache插值语法计算
+	2.methods方法计算
+*	3.computed计算属性
+		响应式数据计算都应该用计算属性
+
+	computed相较于methods
+		计算属性有缓存，当数据不发生变化时，计算属性不会计算而直接调用缓存
+		computed在数据发生改变时，会重新计算数据（响应式）（性能更高）
+		methods函数必定执行，没有缓存，全部计算		
+
+计算属性完整写法（了解）
+	1.get
+	2.set
+
+watch侦听器（属性） 
+	监听对象有两个传入参数（newValue，oldValue）
+	如果是对象类型，拿到代理对象proxy，
+		1.通过{ ... newValue }可以拿到对象映射
+		2.通过Vue.toRaw(newValue)可以拿到原对象
+
+watch配置选项
+	template深度监听
+	watch默认没有进行深度监听
+
+	watch手动深度监听：
+		info: {
+			handler() {}
+	1.深度		deep: true
+	2.立即		immediate: true
+		}
+
+组件中有个created()函数，在创建时执行
+一般用于网络请求拿到数据
+	函数中可写$watch
+
+双向绑定model		本质
+1.input(手动) 	<input type='text' :value='message' @input='inputChange' 
+	methods: {
+		inputChange(event) {
+			this.message = $event.target.value
+		}
+	}
+
+
+2.
+不用value
+	input中，v-model='message'  (取代value)
+	checkbox:单选框不用value  v-model='布尔值'，且属性值不影响
+用value
+	checkbox:多选框中，必须写入value，同v-model=‘arr’搭配，arr为数组
+	vadio中，可用name互斥，v-model 与value搭配（v-model时不用name，自带互斥）
+	select：单选时v-model写在select中，而不是option
+	select multiple：多选时v-model='arr'
+v-model修饰符
+	1.lazy，将input监听事件变成change事件
+	2.number，固定数字类型
+	3.trim,去除两边的空格
+
+注册组件：
+	1.全局组件
+		const productItem = {
+		template: ``,
+		data:{},
+		methods:{}
+		}
+	注册：	app.component('product-item',productItem)(组件名称，组件名对象)
+	引用：  <product-item></product-item>
+	一旦创建，可在任意地区使用
+	组件名： 
+		1）短横线分隔符
+		2）大驼峰标识符	
+
+*	2.局部组件(重要)：
+	注册：先观察组件将在哪里使用
+		在使用地区的组件中，设置components
+	components: {
+		‘标签’： 组件，
+		‘标签’： 组件
+		}
+
+组件的通信
+	1.父传子：接受父属性
+		1）数组写法   弊端：不能验证数据类型；没有默认值
+				props:['','','']
+		2）对象语法 
+		props:{
+			name: {type:String, default: aa},
+			age: {type:Number, default: 0},
+			height: {type:Number, default: 0}
+			}
+		补充： 第三属性required: true
+			如果type: Object,Array
+			则default: () => ({});default: () => []
+
+	非props的Attribute,会默认传递到子组件的根元素上
+	可用$attris.获取
+	可设置inheritAttrs: false将默认禁掉
+
+	2.子传父：emits
+		this.$emit(发出事件名称',发出的参数)
+
+		储存发出事件名称emits:['','']注册说明
+
+插槽slot元素
+	父级在对应的组件中间添加元,对应添加到子组件的slot中
+
+	slot中间写值为其默认值
+
+多个插槽：  组件name=‘A’（写在slot上），，父级template v-slot:A
+	使用具名插槽，不带name的插槽默认name=‘default’
+
+	动态插槽名： v-slot:[变量]
+语法糖：v-slot->#
+
+渲染作用域：
+	内容都是在内容所在作用域编译的
+
+作用域插槽
+	子往外传递子作用域中的变量，
+
+	子<slop :item='item' name='abc'>
+	父<template v-slot:default="props">
+	  </template>
+	props为对象，包含着所有传递过来的item，name
+
+独占默认插槽简写：v-slot:default=''->v-slot=''
+
+
+非父子组件通信（long range props）
+1.祖先系
+	provide（提供）/inject(注入)
+	如果要在provide中用this指向data，用写provide函数
+
+	如果provide需要动态数据，需引入computed函数
+	computed函数注入时返回ref对象，需要手动解包（.value）
+
+2.eventBus事件总线
+封装hy-event-store
+	eventBus.emit('',)
+	eventBus.on('',()=>{})在监听时放在created（）{}上
+
+
+  消除事件总线unmounted(),eventBus.off('事件'，要移除的方法)
+
+组件的生命周期:创建->挂载->更新->卸载
+	1.beforeCreate
+		创建组件实例
+	2.created
+		template模板编译
+	3.beforeMount
+		挂载到vDOM->真实DOM->界面div
+	4.mounted
+		数据更新：message改变
+	5.beforeUpdate
+		新的VNode->VDOM->DOM
+	6.updated
+		不再使用v-if--'false'
+	7.beforeUnmount
+		将之前挂载在VDOM中的VNode从VDOM移除
+	8.unmounted
+		将组件实例销毁
+
+ref获取元素（组件也可，实例--类的投射）
+	在元素标签上写入ref='A'
+	获取时  this.$refs.A
+
+	可以用$ref在父组件中调用子组件的方法
+	可以用this.$ref.子组件.$el获得子组件元素
+ 
+动态组件的使用
+	1.v-if
+	2.动态组件component
+	  <component is='组件名'></component>
+	  <component :is=''></component>
+
+保持存活keep-alive包裹组件
+	元素属性 include=‘组件name，组件name’（单独选取）
+		 exclude
+
+	name需在组件中定义name属性
+
+	keep-alive中包含的生命周期
+		activated()		进入
+		deactivated()	离开
+
+异步分包处理：
+	import(地址).then(res => {res.sum()})
+
+异步组件：
+	import { defineAsyncComponent } from 'vue'
+	const AsyncCategory = defineAsyncComponent(() => import(地址))
+
+组件中的v-model
+	<counter v-model='appChange'></counter>
+	本质：1. :modelValue='appChange'
+	     2. @update:modelValue='appChange = $event'
+	<counter v-model:counter='appChange'></counter>
+
+组件混入Mixin
+	import (mixin) from ''
+	mixins: []
+
+
+compositionAPI
+setup两个参数：props/context
+context对象包含：attrs/slots/emit
+setup中不可以使用this
+
+1.响应式：1）reactive函数定义复杂类型数据（对象）  account.counter
+		原因：该函数处理的数据会被劫持，收集依赖，做出响应
+	   2）ref即可定义简单，也可定义复杂，返回ref对象，需取值.value
+					.vue的template中，vue会对ref进行解包
+	   3）readonly: 保证vue单项数据流规范
+
+2.方法函数
+	isProxy:判断对象是否由reactive或readonly创建的proxy
+	isReactive：判断本质是否由reactive创建
+	isReadonly:判断是否由readonly创建
+	toRaw:返回被proxy代理的原始对象
+	shallowReactive：创建浅层响应式代理对象
+	shallowReadonly:创建浅层响应式readonly
+	
+	toRefs:可将reactive解构并且仍保留响应式
+	eg： const name = toRef（info,'name'）
+
+	unref:
+	本质：val = isRef(val) ? val.value : val
+	isRef
+	shallowRef
+	triggerRef:手动触发
+
+optionsAPI->compositionAPI
+函数转变
+1.computed  本身返回的也是ref
+	:const fullname = computed(() => {})  get语法
+	:const fullname = computed({
+		set: (value) => {}
+		get: () => {}
+	})
+2.ref标签属性
+	<h2 ref='A'>demo</h2>
+	setup中  const A = ref()   (需放如生命周期onMounted)
+
+3.生命周期钩子hook  (除了created和beforeCreate)
+	用法：直接导入on+
+		import onMounted from 'vue'
+		onMounted(() => {})
+
+4.了解provide/inject
+
+5.watch  (compositionAPI本身自带deep：true)
+	watch(message,(newValue,oldValue) => {})
+
+	获取普通对象而不是proxy：
+		watch(() => ({...info}),() => {},{deep:true})
+
+  watchEffect:  直接执行；自动监听依赖
+	watchEffect(() => {})    有返回值
+  	watchEffect的停止监听	利用if
+
+改标题：document.title=''，做封装hook
+
+钩子hook一般在组件中只调用1次，而对hook进行特殊的包装
+
+
+setup语法糖
+	不需要再components
+	顶层内容都会暴露给模板，共同作用域
+
+	props->defineProps({  })
+	emits->defineEmits([  ])  emit('发出函数名',  )
+
+	defineExpose({ 要暴露到父组件的子组件对象集 })
+
+
+Vue-Router
+路由：维持着个人ip和mac地址的映射
+后端路由：url->服务器渲染html->返回渲染后的html
+前端路由：SPA阶段：url->组件的映射关系
+
+import { createRouter, createWebHashHistory } from 'router-vue'
+
+	routes/history
+路由生效：app.use(router)
+占位组件：router-view
+改变url：<router-link to='/...'>todo</router-link>
+
+redirect重定向：{path:'/',redirect:'/home'}
+hash模式:createWebHashHistory
+history模式：createWebHistory
+
+参数replace：不记录历史，为跳转
+点中router-link-active  (改变名称：active-class='TODO')
+
+路由懒加载：
+	组件分包处理：const Home = () => import(/*webpackChunkName: 'home'*/"./path")
+
+route额外属性：
+	name
+	meta：（放自己想要的属性）
+
+动态路由：
+	匹配id--path:"/users/:id"
+	模板中拿id：{{ $route.params.id }}
+	代码中拿id：import { useRoute } from 'vue-route' 
+		     const route = useRoute()
+		     console.log(route.params.id)
+notFound:
+	path:"/:pathMatch(.*)"
+	components:() => import("path")
+
+router嵌套children：[{},{}]
+
+编程式路由跳换
+	import { useRouter } from "vue-router" 
+	const router = useRouter()
+	const homespanClick = () => { router.push("./home") }
+
+	router.back()
+	router.forward()
+
+
+修改第三方UI组件库的样式
+	1.用插槽，插入自己的元素
+		那么在自己的作用域内修改这个元素
+	2.全局定义一个变量，覆盖它的默认变量的值
+		缺点：全局修改
+	3.局部定义一个变量，覆盖它的默认变量的值
+		优点：局部修改
+	4.直接查找对应的子组件选择器，进行修改
+		:deep(子组件中元素的选择器)进行修改
+		直接修改css
+
+:deep(class){},在style作用域里使样式向子组件穿透生效
+	组件库的使用
+
+隐藏tabbar
+方法一	v-if
+	useRoute()->拿到活跃的路由对象
+方法二 	设置css样式，position:relative,z-index:,
+
+发送网络请求：axios封装
+存储数据
+v-for=“(item,index) in Array”
+v-for="(value,key,index) in Object"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

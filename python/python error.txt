@@ -1,0 +1,29 @@
+unindent：缩进
+indentation：缩进痕迹
+level：等平
+syntax：语法
+identifier：标识符
+EOF：end of file
+define：定义
+index：索引
+range：范围
+concatenate：连接
+attribute：属性
+module：模块
+literal：逐字的
+
+IndentationError:unindent does not match any outer indentation level：缩进问题
+
+SyntaxError:invalid character inidentifier：类似于中英文逗号的标识符问题
+SyntaxError:unexpected EOF while parsing：类似于少右括号的成对问题
+SyntaxError:invalid syntax：类似于语句末遗失冒号的语法问题
+
+NameError:name 'mesage' is not defined：变量名的拼写错误
+
+IndexError:string index out of range
+
+KeyError:'f'：键'f'不存在
+
+TypeError:can only concatenate str(not"int")to str：数据类型错误的运算
+
+AttributeError：找不到未知对象的属性错误，特性引用、赋值失败、__init__()的拼写错误的等等

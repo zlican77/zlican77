@@ -1,0 +1,198 @@
+node  内部包括V8引擎(C++)、libuv中间层(C)、操作系统等
+	编写node语言：#C/C++/js
+架构：js程序->V8->(node.js)->libuv->操作系统
+	循环回调->(node.js)->V8->（回调）js
+libuv提供了事件循环、文件系统读写、网络IO、线程池等
+
+node应用：
+	1.node包的形式进行管理
+	2.工具npm/yarn.pnpm
+	3.开发服务器，中间件、代理服务器
+	4.前后端渲染同构
+	5.编写脚本工具
+	6.使用Electron来开发桌面应用程序
+
+node多版本切换：n/nvm工具（mac系统）
+
+node的输入和输出
+	输入： node js程序 跟上参数
+		process.argv    内置对象，包含所有传入
+	输出js：node js程序
+		 输出console.log内容
+
+node中的全局对象为global，包含着window功能
+
+特殊全局对象：
+	1.__dirname:当前文件所在目录结构
+	2.__filename:文件路径+文件名称
+	3.process：进程信息
+	  一般用来process.argv对象获取
+	4.定时器
+		setTimeout(foo,t)
+		setInterval(foo,t)
+
+		setImmediate(foo)
+		process.nextTick(foo)
+
+window中声明的变量会被放入window
+node中声明变量不会被放入global
+统一全局对象标识符globalThis
+
+模块化开发：将程序划分成一个个结构
+	这个结构可以将自己希望暴露的变量、函数、对象等导出给其他结构使用
+
+commonJS：       本质：引用赋值，指向同一个对象指针
+	导出exports
+	导入require
+node/webpack采用了commonJS规范，浏览器不支持
+node中每个文件都是一个单独的模块
+
+module.exports
+	module对象中有个exports属性，指向exports对象
+	即module.exports === exports
+
+本质上exports和require都是在找module.exports
+
+require细节查找规则
+	require(x)根据路径导入模块
+	情况1：直接找到内置模块并直接导入（path/http）
+	情况2：寻找文件：x->x.js->x.json->x.node，如果没有则当目录
+		寻找目录：x/index.js->x/index.json->x/index.node
+	情况3：进入node_modules，进入x文件，进入index
+	情况4：接着去上一层找node_modules
+
+模块在require导入时js代码会被运行一次
+但多次引入只会执行第一次，module.loaded = true(被加载过后)
+如果有循环应用采用DBF深度优先算法
+
+ES Module
+	import/export
+	编译期静态分析，动态引用
+
+浏览器中使用esmodule时，from 后面的文件要加拓展名
+	
+导入与导出会有别名写法
+
+名字导出named exports  导入时需要{ 对应的导出名字 }
+默认导出default export 导出时不需要{}，直接自己命名
+
+导入声明只能写在js顶层，需要判断的话可用import函数
+const importPromise = import(./xx)        （异步）
+importPromise.then(res => { console.log(res.name) })
+可写成一行 ，import返回promise，可用then
+
+ESmodule解析过程
+	构建阶段:(import）生成层层js模块记录->
+	实例化阶段(export)实例化模块环境记录->
+	求值阶段：运行代码计算赋值
+
+代码共享npm包管理工具：node package manager
+所有发布的包进入registry仓库
+
+配置文件：手动npm init -y    脚手架生成
+	1.package.json记录名称、版本号、依赖等等
+
+package.json
+	main:设置当下文件程序入口
+	scripts:脚本，命名运行脚本  npm run xxx  运行
+	dependencies:开发依赖和生产依赖，如vue      npm install  安装依赖，
+	devDependencied:开发依赖，而生成环境不依赖，如webpack  npm install webpack -D
+	
+	常见属性
+		peerDependencies:对等依赖，下级库
+		engines：指定node和npm版本号
+		browserslist:配置打包后的js浏览器兼容情况
+		
+
+依赖的版本管理
+	semver版本规范X.Y.Z
+	X主版本号：做了不可兼容的API(可能不兼容之前的版本)
+	Y次版本号：做了向下兼容的功能性新增（新功能增加，但是兼容之前版本）
+	Z修订号：向下兼容的问题修正（没有新功能，修复了之前版本的bug）
+	
+	^X.Y.Z：X版本不变，Y.Z永远保持最新
+	~X.Y.Z：X.Y版本不变，Z永远保持最新
+
+npm install
+	局部安装：至当下文件夹
+	全局安装：npm install xxx -g(工具型包)
+		vue/axios库等全局安装没意义，一般安装工具型包
+
+缓存概念Cache:
+package-lock.json--确定具体版本
+
+package.json->npm install->构建依赖关系->registry仓库->压缩包->node_module->完成
+		                |                    ^		^		^	        |
+	  		  |          |          |           |         |
+	    package-lock.json->检测依赖一致性->查找缓存->缓存文件            |
+			  ^							    |
+			  |—————————————————————————
+
+yarn工具：在npm有缺陷时出现的一个npm包
+	缓存包功能
+
+npm发包
+	1.index导出文件，package.json记录文件
+	2.npm publish
+	更新：修改package中的版号
+	删除：npm unpublish
+	过期：npm deprecate
+
+webpack打包：
+	1.npm install webpack webpack-cli
+	2.npx webpack
+
+npx用来进入内层包
+	1.npx webpack
+	2../node_modules/.bin/webpack
+	3."script":{
+		"nwebpack":"npx webpack"
+		}
+
+pnpm：解决了一堆项目包的堆积痛点
+优势：硬连接和软连接，相同版本依赖不会占用额外的硬盘空间
+	performant npm
+	快速：比npm块2倍
+	高效：node_modules中的文件链接自特定的内容寻址存储库
+	支持monorepos：pnpm内置支持单仓多包
+	严格：pnpm默认创建一个非平铺的node_modules,因从代码无法访问任意包
+
+vue/Micresoft/ByteDance/开源项目等在用pnpm
+
+操作系统抽象：
+	1.硬连接hard link
+		电脑中多个文件平等地共享一个文件存储单元
+		删除一个文件名字后还可以用其他名字继续访问该文件
+	2.软连接soft link（符号链接）
+		路径指向其他文件或目录的引用--快捷方式
+	原理：硬盘上储存真实数据：
+		文件指向磁盘：硬连接
+		文件指向文件：软连接/符号连接
+	window硬连接命令：mklink /H new-file old-file
+	window软连接命令：mklink new-file old-file
+
+pnpm文件存储
+	pnpm运用硬连接使得磁盘上对同版依赖只有一份文件(.pnpm的存储总仓store硬连接)（.pnpm-store）
+						（需要则在此基础上再建立硬连接）
+	npm扁平node_modules
+	pnpm非扁平node_modules(.pnpm硬连接的应用体现)
+	pnpm install&&pnpm add 包
+	pnpm store prune(裁剪)
+
+
+
+node内置模块path
+	window路径分隔符\  \\
+	linux,Mac OS路径分隔符/
+path.dirname 分隔全名
+path.extname后缀名
+path.filename文件名
+path.join(‘’,‘’)路径拼接
+
+path.resolve('','')拼接绝对路径（‘./’为相对路径，‘/’为绝对路径）
+	从右向左解析，直到构成绝对路径
+	若最后未形成绝对路径，则和当前目录拼接
+	path.resolve('./aaa','/bbb','./ccc.txt')
+	->D:\bbb\ccc.txt
+
+

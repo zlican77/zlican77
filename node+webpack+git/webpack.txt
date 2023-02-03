@@ -1,0 +1,122 @@
+
+
+Webpack（打包bundler/静态static/模块化module/现代modern）
+	node的作用：webpack/vite等一堆包都是由js代码开发的程序
+		因从全都依赖于node中的V8引擎（环境）
+Webpack作用：		
+	     所有脚手架都依赖于webpack，模块化打包工具
+	打包：将所有的文件（.vue/.jsx/.sass）转化为简单的html/css/js es5浏览器可识别的文件
+										(静态资源，static)
+	webpack在vue中作用：ES6->ES5
+
+webpack-cli:识别命令行的作用
+	开发项目中一般用局部安装npx webpack
+
+webpack修改路口，文件名等：打包时传入参数
+默认入口./src/index.js 默认输出。/dist/main.js
+原生命名
+	路口：--entry ./src/main.js
+	输出文件：--output-filename build.js
+	输出文件夹名：--output-path ./build
+优化至配置文件：webpack.config.js
+	const path = require("path")
+	module.exports = {				node环境下用commonJS模块化
+		entry: "./src/main.js",
+		output: {
+			filename: "bundle.js",
+			path: path.resolve(__dirname,"./build")  path必须用绝对路径，因此path.resolve()
+		}
+	}
+也可自名配置文件：npx webpack --config wk.config.js
+(一般放置在script里："build":"webpack --config wk.config.js")
+
+webpack需要对应的loader去转化不同的后缀名
+webpack.config.js拓展loader  --module-rules
+.vue->vue-loader
+.css->css-loader
+
+npm install css-loader -D
+npm install style-loader -D
+module.exports = {				node环境下用commonJS模块化
+		module: {
+			rules:[{test: /\.css$/,			test匹配
+				  use:[{loader:"style-loader"},  	use loader
+					 {loader:"css-loader"} ]		自下向上执行
+			}]
+		}
+	}
+
+		.less$->postcss-loader
+		插件-postcss-preset-env
+
+图片等文件内置处理:text/type/parser/generator
+	module--rules-test:
+			type: "asset"
+
+		asset/resource——复制新的url
+		asset/inline——base64编码，放在js行内
+
+	占位符：name/ext/hash
+	eg: [name]_[hash:8][ext]
+
+babel预设：@babel/preset-env,放在babel.config.js中
+		module.exports--presets
+
+vue配置，const VueLoaderPlugin = require('vue-loader/dist/index')
+	module.exports--plugins:[new VueLoaderPlugin()]
+
+webpack通过resolve来解析import/require引入
+
+plugin插件与loader
+loader用来处理转化确定的类型，特定单体
+plugin执行更广泛的任务，如打包优化、资源管理、环境变量注入
+	1.CleanWebpackPlugin()
+	2.HtmlWebpackPlugin({title:  ,template:"  "})
+	3.DefinePlugin(webpack内置插件，new DefinePlugin({xxx}))
+		(process.env.NODE_ENV)
+
+Mode模式：none/development/production
+
+webpack搭建本地服务器
+	webpack-dev-serve:自动编译更新浏览器变化
+
+模块热替换（HMR）:hot module replacement
+	模块替换而不是刷新整个网页
+	devserve:{hot: true},但是我们需自己指定模块需要HMR   
+
+host配置
+	devserve: {}
+common,production,development
+
+
+const xxx from ''
+module.exports = {
+	entry:"bundle.js"
+	output:{
+		clean: true,
+		filename:  ,
+		path:  
+	}
+	resolve：{
+		extensions:[],
+		alias:{
+			utils: path.resolve(__dirname,"./src/utils")	utils:"@/utils"
+		}
+	},
+	devserve:{
+		hot: true.,
+		host: "0.0.0.0",
+		port: 8888,
+		open: true
+	}
+	module:{
+		rules:[
+		{
+		test:  ,
+		loader:  
+		},
+		]
+	}
+	plugins:[new VueLoaderPlugin()],
+}
+

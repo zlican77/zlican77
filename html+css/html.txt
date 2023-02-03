@@ -1,0 +1,74 @@
+<html></html>全局
+<head></head>顶框
+<title></title>顶内容
+<body></body>页面
+
+
+<h1></h1>大小
+<p></p>段落
+<br />换行
+
+<strong></strong> 加粗
+<em></em>倾斜
+<del></del>删除线    del=delete
+<ins></ins>下划线
+
+<div></div>大框    div=division
+<span></span>小框
+
+<img src=""/>图片    img=image  src=source
+<img src="" alt=""/>如果图片无法显示则显示alt
+<img src="" alt="" title=""/>图片说明
+<img src="" alt="" title="" width="" height="" border=""/>图片大小边框
+
+<a href="跳转目标" target="_self or _blank">文本或图像<a/>超链接
+    a=anchor    href=hypertext reference
+<a href="#"></a>空链接
+<a href="exe or zip"></a>下载链接
+<a href="#key"></a>标签超链接
+<h3 id="key"></h3>
+
+<!--
+注释
+-->
+
+&nbsp;  =  空格
+&lt;  =  小于号
+&gt;  =  大于号
+
+<table align="" border="" cellpadding="" cellspacing="" width=""></table>表格
+            表格位置 表格边框线    字框距                框框距              表格大小
+<tr></tr>行  嵌套于table中
+<td></td>单元格  嵌套于tr中    td = table data
+<th></th>表头单元格  加粗&居中    嵌套于tr中    th = table head
+<thead></thead> 包含tr 表格头部
+<tbody></tbody> 包含tr 表格主体
+
+<tr rowspan="2">跨行合并
+<tr colspan="2">跨列合并
+
+**<ul></ul> 无序列表
+<li></li> 嵌套于ul中
+<ol></ol> 有序列表
+<li></li> 嵌套于ol中
+**<dl></dl> 自定义列表
+<dt></dt> 头
+<dd></dd> 身
+
+<form action="URL地址" method="get or post" name="名称"><form> 表单域
+输入表单：
+<input type="属性"  name="名称" value="值" checked="checked" maxlength="" disabled=(true false)/>
+属性：text文字 password密码 submit提交按钮 reset重置按钮 button普通按钮搭配js file文件域
+          radio单选按钮(与单一name搭配) checkbox复选框(与单一name搭配)
+	    
+标签：
+        <lable for="SEX">男<lable>  为文字做标签，扩大可选范围 与input中id关联
+        <input type="radio" name="sex" id="SEX"/>
+下拉表单：
+<select></select>
+<option selected="selected">abc<option> 嵌套于select
+文本域表单：
+<textarea cols="50" rows="5"></textarea> 50字*5行的文本域  
+
+
+

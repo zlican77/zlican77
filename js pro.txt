@@ -462,22 +462,63 @@ Object为所有类（包括函数）的祖级（原型链）
 
 ES6实现继承
 原型链继承关系图
+Function/Object/Array
+foo()对象的隐式原型===Function的显示原型
+foo.__proto__===Function.prototype
+
+实例方法：放在原型上
+类方法：放在对象里
 
 
-
-
+ES6
 
 class方式定义类
+class Person {
+	constructor() {}	//传入参数调用constructor函数
+	}
 
+class是es5中创建对象的语法糖，typeof都是function
+不同点：class定义的类不能直接作为函数调用
+
+对象访问器方法->内部设立set和get
+
+静态static方法（es6后的类方法）
+	在要定义的方法前加上static使其变成静态方法，不需实例调用
+
+
+
+
+以下划线和#开头的变量一般不在外界访问，而是在内部设立set和get，间接使用
 
 
 
 extends实现继承
+	class Student extends Person {
+	用super将参数传入父类（写在this前）
+	直接写方法是放入显示原型，为实例方法
+	}
+指向super调用父类的constructor
 
+父类方法重写
+super可用在构造方法，实例方法和静态方法
 
+类的混入mixin
 
 
 Babel的ES6转ES5
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,0 +1,120 @@
+爬虫分类：
+	1.通用爬虫：抓取整张页面数据
+	2.聚焦爬虫：抓取特点局部内容（建立在通用爬虫的基础上）
+	3.增量式爬虫：检测网站中数据更新的情况，抓取最新更新内容
+
+反爬机制/反反爬策略
+
+robots.txt协议——爬虫规范
+
+http:
+请求头信息
+	User-Agent:请求载体的身份标识
+	Connection:请求完毕后是断开连接还是保持连接
+响应头信息
+	Content-Type:服务器响应回客户端的数据类型
+
+https: secure安全的http（数据加密）
+加密方式：对称密钥/非对称密钥/证书密钥
+
+requests模块——py原生的一款基于网络请求的模块
+作用：模拟浏览器发请求
+
+requests.get(url=url,
+		params=param,
+		headers=headers)
+
+使用:
+	import requests
+	指定url	:  url='http://xxx'			指定url
+	发起请求	:  response = requests.get(url=url)	发起请求，返回响应对象
+	获取响应数据	:  page_text = response.text		返回字符串形象响应数据
+	持久化存储	：  with open('xxx.html', 'w', encoding='utf-8') as fp:
+				fp.write(page_text)		存储
+			   [print('爬取完成')]
+
+UA检测：门户网站的服务器会检测请求载体的身份标识
+UA伪装：将对应的User-Agent封装到字典中（headers）
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

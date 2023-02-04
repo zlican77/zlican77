@@ -508,33 +508,80 @@ super可用在构造方法，实例方法和静态方法
 Babel的ES6转ES5
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 面向对象多态理解
+	继承是多态的前提
+	定义：为不同数据类型的实体提供统一接口，或使用单一的符号来表示多个不同的类型
+	理解：不同的数据类型进行同一个操作，表现出不同的行为，就是多态的体现
 
-
-
-
+多态的条件
+	有继承
+	有父类引用指向子类对象
 
 ES6对象的增强
+	属性的增强  { name }
+	方法的增强  { running() {} }
+	计算属性名  { [var] : value }
+
+解构：
+	数组结构有严格的顺序  也可以用'...arr'解构成新数组  也可以直接赋值
+	对象结构没有顺序，根据key来解构  可以在解构直接重命名 { okey: nkey}  也可以直接赋值
+
+手写apply/call/bind
+	apply:
+		function foo(name,age) {
+			console.log(this,name,age)
+			}
+		Function.prototype.icapply = function(thisArg,otherArgs) {
+			thisArg = (thisArg === null || thisArg === undefined)? window: Object(thisArg)  //edge case
+			Object.defineProperty(thisArg,'fn',{
+				configurable: true,
+				enumerable: false,  //不可见
+				value: this
+				})
+			thisArg.fn(...otherArgs)  //原生隐式绑定    核心
+			delete thisArg.fn
+			}
+		foo.icapply( {name:'why'} ,['why',18])
 
 
 
+	call:
+		function foo(name,age) {
+			console.log(this,name,age)
+			}
+		Function.prototype.iccall = function(thisArg,...otherArgs) {
+			thisArg = (thisArg === null || thisArg === undefined)? window: Object(thisArg)  //edge case
+			Object.defineProperty(thisArg,'fn',{
+				configurable: true,
+				enumerable: false,  //不可见
+				value: this
+				})
+			thisArg.fn(...otherArgs)  //原生隐式绑定    核心
+			delete thisArg.fn
+			}
+		foo.iccall( {name:'why'} ,'why',18)
+
+	//可以共同代码机械能封装
+
+	bind:
+		function foo(name,age) {
+			console.log(this,name,age)
+			}
+		Function.prototype.icbind = function(thisArg，...otherArgs) {
+			thisArg = (thisArg === null || thisArg === undefined)? window: Object(thisArg)  //edge case
+			Object.defineProperty(thisArg,'fn',{
+				configurable: true,
+				enumerable: false,  //不可见
+				value: this
+				})
+			return (...newArgs) => {
+				Args = otherArgs.concat(newArgs)
+				thisArg.fn(...Args)		//箭头函数巧用this（fn）
+				}	
+			}
+		var newFoo = foo.icbind( {name: 'why'} )
+		newFoo()
+	
 
 
 

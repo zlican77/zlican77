@@ -582,33 +582,57 @@ ES6对象的增强
 		var newFoo = foo.icbind( {name: 'why'} )
 		newFoo()
 	
+ES新描述
+词法环境：Lexical Environments
+	词法环境关联：
+		环境记录Environment Record和外部词法环境Outer
+	环境记录关联：
+		词法环境Lexical Environments（let/const）——不会变量提升，不可被访问，暂时性死区
+		和  变量环境Variable Environment(var/function)）——可以被访问
+
+let/const
+const:constant常量，衡量；持久不变的，恒定的
+
+var就是有缺陷的
+let/const	不能重复声明变量
+		作用域不会提升，但是会被提前创建，不能被图提前访问而已（暂时性死区）
+
+暂时性死区：temporal dead zone
+	定义：从块作用域的顶部一直到变量声明完成之前，这个变量处在暂时性死区
+	
+	1.与执行顺序有关，与代码位置无关
+	2.暂时性死区形成之后，在该区域内这个标识符不能被访问
+		let message = 'ic'
+		function foo() {
+			console.log(message)
+			let message = 'ic-1'
+		}
+		foo()			//报错
+
+全局里面var定义的属性会添加到window对象上
+而let/const不会添加到window对象上
 
 
+window的环境记录比较特殊：
+	window对象（内置对象，函数声明，var声明）
+	和声明环境记录（let/const声明等）
 
+块级作用域
+	使用let/const/function/class，形成块级作用域
+	块级作用域里函数会被特殊处理
+	var会被任意穿透提升,但不能穿透函数的块级作用域
 
+	es5中函数能被提升且赋值调用
+	es6中函数能穿透作用域，被提升，但未被赋值
+		
+window对象上
+	词法环境->环境记录/outer
+			环境记录->window对象(var、function)）/声明式环境记录(let、const)
 
+块级作用域作用
+	例如按钮点击的变量i外层需要一个作用域 将每次变化隔开
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+开发中优先使用const，需要时用let，不用var-淘汰（历史缺陷）
 
 
 

@@ -634,6 +634,176 @@ window对象上
 
 开发中优先使用const，需要时用let，不用var-淘汰（历史缺陷）
 
+模板字符串——`${expression}`,反引号+$+{表达式}
+标签模板字符串——foo``将反引号内容传入foo并调用foo
+	const name = 'ic'
+	const age = 18
+	function foo(...args) {
+		console.log('参数',args)
+	}
+	foo`name ${name},age ${age}, height ${1.8},over`
+------>
+	>>[Array(4), 'ic', 18, 1.8]
+	0: ['name ', ',age ', ', height ', ',over', raw: Array(4)]
+	1: "ic"
+	2: 18
+	3: 1.8
+	
+逻辑  1||2：是真返回1，假返回2
+新增语法：？？	
+	1 ？？2：null和undefined时返回2
+如果直接在写=xxx，表示若不写或undefined时赋值
+
+函数增强：
+	1.有默认参数的形参尽量写在后面
+	2.有默认参数的形参和之后的参数都不会计数在length之内
+	3.剩余参数...放在默认参数之后
+	4.默认参数也可以和解构一起使用
+	function foo(name,age = 18,...args) {}
+	function foo({name = 'ic'} = {}) {}
+
+箭头函数没有显示原型，不是new构造函数，直接转class定义类
+不绑定this/arguments/super
+
+展开语法
+	函数调用
+	数组构造
+	在构建对象字面量时:将展开数据进行迭代（对象内使用...obj，放出key和value）
+	such as：
+		const name = ['1','2','3']
+		function foo(x,y,z) {}
+		foo(...name)
+
+
+引用赋值||浅拷贝||深拷贝
+展开运算符就是浅拷贝
+	const obj = {
+		age: 18
+		friend: { name: 'curry' }	
+		}
+	const info = {...obj}
+
+	则obj的friend和info的friend指向同一个对象（指针）
+
+目前js不支持直接深拷贝（但可以运用库或自己手写实现）
+	const info = JSON.parse(JSON.stringify(obj)) 
+
+
+0b:二进制
+0o:八进制
+0x：十六进制 
+连接符长数字表示： const money = 100_0000_0000_0000
+
+
+
+数据类型：String/Number/Boolean/Null/Undefined/Symbol
+数据结构：Array/Object/Set/Map
+
+
+er
+Symbol运用：
+	const sKey = Symbol()
+	obj[sKey] = function() {}  //在obj中添加Symbol属性
+	console.log( obj[sKey] )   //打印obj中的Symbol属性
+
+Symbol属性description
+	Object.keys()不能获取Symbol
+	Object.getOwnPropertySymbols()获取Symbol的key
+
+Symbol的属性description->Symbol(description)
+只用Symbol()创建的Symbol类型是独一无二的
+生成相同的Symbol类型--for方法：
+	const s1 = Symbol.for('ic-key')
+	const s2 = Symbol.for('ic-key')  //相同的key
+	console.log( s1 === s2)   //true
+	获取Symbol的key：
+		Symbol.keyFor(s1)
+
+Set属性类型:不重复元素，属于可迭代对象(Array,arguments,Set等可以索引的)(for of就是来遍历可迭代对象)
+const set = new Set()
+方法add:
+	set.add(xxx)
+作用：去重
+	const nums = [1,2,3,1,5]
+	const newNumsSet = new Set(nums)
+	const newNums = Array.from(newNumsSet)
+	console.log(newNums)
+Set属性和方法：
+	size: 返回Set中元素的个数
+	add(value): 添加某个元素，返回Set对象本身
+	has(value): 判断set中是否存在某个元素，返回boolean类型
+	delete(value)
+	clear(): 清空所有元素，没有返回值
+	forEach(callback[,thisArg]): 通过forEach遍历set:
+		set.forEach(item => console.log(item))
+
+（小注obj.xxx,xxx为字符串，obj[xxx],xxx为特定量，不同于obj['xxx']
+	后者更加友好）
+
+弱引用：Weak Reference
+强引用：Strong Reference
+
+WeakSet,和Set类似
+不同：WeakSet里只能放对象，不能放基本数据类型
+	对所有对象的引用都是弱引用，不能保证对象一定能获取到，可能会被垃圾回收算法回收
+	不能进行遍历操作（可能已经被回收了，对象没法获取）
+
+demo:使得函数调用只能由实例对象发起，不能由window或其他对象发起,且保证无用无用对象销毁
+	const pWeakSet = new WeakSet()
+	class Person {
+		constructor() {
+			pWeakSet.add(this)
+		}
+		running() {
+			if (!pWeakSet.has(this)) {
+				console.log('type is error')
+			}
+			else {
+				console.log('running~')
+			}
+		}
+	}
+	let p = new Person()
+	const runFn = p.running
+	runFn()
+	const obj = { run: runFn }
+	obj.run()				
+	p.running()
+	p = null
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

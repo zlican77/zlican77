@@ -35,7 +35,7 @@
 		var arr2 = [2];
 		var arr3 = arr1.concat(arr2);
 				//[1,2]
-	includes: 包括，有则返回true
+	includes(): 是否包括/存在，有则返回true
 
 	
 *****内置对象

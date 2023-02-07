@@ -676,7 +676,7 @@ window对象上
 
 
 引用赋值||浅拷贝||深拷贝
-展开运算符就是浅拷贝
+展开运算符就是浅拷贝		//以前是用slice进行浅拷贝
 	const obj = {
 		age: 18
 		friend: { name: 'curry' }	
@@ -771,35 +771,89 @@ demo:使得函数调用只能由实例对象发起，不能由window或其他对
 	p.running()
 	p = null
 
+Map:映射
+	对象里面的key只能是字符串或Symbol类型
+	Map类型可以用对象做key:
+		const map = new Map()
+		map.set(info,'aaa')
+		( info => 'aaa' )
+	方法：
+		set/get/delete/has/clear
+		forEach:获得的是value
+		for of : 将key和value组成数组  （可以解构）
+such as
+		const obj = {
+			name: 'obj'
+		}
+		const info = {
+			name: 'info',
+		}
+		const map = new Map();
+		map.set(obj,1)
+		map.set(info,2)
+		map.forEach( item => console.log(item) )
+		for (const item of map) {
+			const [ key , value ] = item
+			console.log(key, value)
+		}
+
+WeakMap
+和Map不同： 
+	1.key只能是对象
+	2.对象是弱引用，会销毁
 
 
+ES7~ES13：
+	ES7：
+		1.Array.includes(),返回Boolean  替代indexOf()
+		2.指数运算符** 替代Math.pow()
 
+	ES8:
+		1.Object.values(obj)返回到所有值的数组
+	      	2.Object.entries(obj)返回数组，且键值对以数组型保存，可解构
+			entries()的内容是数组或字符串时，key是索引
+	   	3.padStart(num,xxx):字符串的填充方法
+			首尾填充：const second = '6'.padStart(2,'0')
+					//'06'
+			数字隐藏：	const cardNumber = '342561563784245256'
+			  		const lastFourNumber = cardNumber.slice(-4)
+			  		const finalCardNumber = lastFourNumber.padStart(cardNumber.length,'*')
+			  		console.log(finalCardNumber)
+		4.Trailing commas 允许尾部逗号
+			function foo(a,b,) {}
+		5.Object.getOwnPropertyDescriptors  获取对象描述符
+		6.Async Function: async、await
 
+	ES9:	1.Async iterators
+		2.Object spread operators: 对象的展开
+		3.Promise finally
 
+	ES10:
+		1.flat()方法:将一个数组按照指定的深度遍历，将遍历到的元素和子数组中的元素组成一个新的数组，进行返回
+			深度扁平化：
+				const nums = [10,20,[10,20],[[10,20]]]
+				const newNums1 = nums.flat(1)
+				//[10,20,10,20,[10,20]]
+				const newNums2 = nums.flat(2)
+				//[10,20,10,20,10,20]
 
+		2.flatMap:先map操作，再flat(1)进行扁平化，返回新数组
+		3.Object.fromEntries()  将entries重新转回对象
+		4.trimStart/trimEnd
+		5.Symbol description
+		6.Optional catch binding
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	ES11:
+		1.bigInt:在数值后面加个n
+		2.空值合并运算符 A？？B：null或undefined时返回B，否则返回A
+		3.optional chaining可选链 xx?.(xx有就拿，没有就直接返回undefined)
+			obj.friend?.running?.()
+		4.globalthis
+		5.for...in是用于遍历对象的key
+		6.Dynamic Import
+		7.Promise.allSettled
+		8.import meta
+	ES12:
 
 
 

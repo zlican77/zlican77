@@ -914,12 +914,12 @@ Proxy类 代理监听:
 	const objProxy = new Proxy(target,handler)
 		监听：在handler中添加捕获器
 		13个trap捕获器: ！！！重写的话操作也要自己写，如：target.key = value
-			get函数-params：	target(目标对象obj)
-						property(捕获属性key)
-						receiver(代理对象)
 			set函数-params:	target(目标对象obj)
 						property(捕获属性key)
 						value(新属性值)
+						receiver(代理对象),可以用来改变传递的this
+			get函数-params：	target(目标对象obj)
+						property(捕获属性key)
 						receiver(代理对象)
 			deleteProperty函数:target(目标对象obj)
 						key
@@ -929,31 +929,73 @@ Proxy类 代理监听:
 			apply函数
 			constructor函数
 
+Reflect对象 反射：替代Object对对象的操作方法
+	对对象本身的操作（Object本身是构造函数，不适合存放对象操作方法）
+	Object.getPrototypeOf()->Reflect.getProtorypeOf()
+	Object.definePrototype()->Reflect.definePrototype()
+	Reflect.deleteProperty()
+
+Proxy与Reflect共同完成代理：Reflect方法有返回值，可判断Proxy代理方法是否成功
+	好处1：代理对象，不再直接操作原对象
+	好处2：Reflect.set返回boolean
+	好处3：receiver就是外层Proxy对象
+		receiver可以决定对象访问器setter/getter的this指向
+
+Reflect.construct(A,[params],C)
+A:执行函数
+params:传入A的参数
+B:以C为类创建对象
+作用同借用构造函数
 
 
+Promise:解决异步处理代码的困境
+	function execCode(counter) {
+		const pro = new Promise((resolve,reject) => {
+			setTimeout(() => {
+				if (counter > 0) {
+					let total = 0
+					for (let i = 0; i < counter; i++) {
+						total += i
+					}
+					resolve(total)
+				} else {
+					reject(`${counter}有问题`)
+				}
+			}, 3000)
+		})
+		return pro 
+	}
+	--->
+	const promise = execCode(100)
+	promise.then((value) => {console.log('成功',value)})
+	promise.catch((err) => {console.log('失败')})
+	--->
+	execCode(100).then((value) => {
+		console.log('成功：',value)	
+	}).catch((err) => {
+		console.log('失败')
+	})
 
+new Promise()时需传入一个回调函数，executor
+	该函数回立即执行，并且携带两个回调函数resolve,reject
+	调用resolve时，会执行promise对象的then方法
+	调用reject时，会执行promise对象的catch方法
 
+Promise使用步骤
+	1.创建 const pro = new Promise(() => {})
+	2.监听 pro.then(() => {}).catch(() => {})
+	3.在立即执行函数executor调用resolve和reject回调函数
 
+Promise后有三种
+	1.待定状态：既没有被兑现(resolve)也没有被拒绝(reject)
+	->一旦状态确定，Promise就状态锁定，且方法不再复用
+	2.兑现状态
+	3.拒绝状态
 
+如果resolve的值本身是Promise对象，那么当前的Promise的状态会由传入的Promise决定（由内替代原来，并在原来的状态传值）
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+也可以将.catch()放入.then中
+	promise.then((res) = {}, (err) => {})
 
 
 

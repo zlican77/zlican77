@@ -853,7 +853,156 @@ ES7~ES13：
 		6.Dynamic Import
 		7.Promise.allSettled
 		8.import meta
+
 	ES12:
+		1.FinalizationRegistry:可以让一个对象被回收时请求一个回调
+			let obj = { name: 'obj' }
+			const finalRegistry = new FinalizationRegistry((param) => {
+				console.log(`{param}对象被回收了)
+				})
+			finalRegistry.register(obj,param)
+			obj = null
+		2.WeakRefs弱引用
+			let obj = { name: 'obj' }
+			const info = new WeakRef(obj)
+			//解析
+			console.log(info.deref().name) 
+		3.logical 逻辑赋值运算符
+			逻辑或：A ||= B
+			逻辑或：A ??= B
+			逻辑与：obj && obj.running && obj.running()
+		4.Numeric Seperator数字分隔符
+		5.String.replaceAll(old,new)
+			replace()只会替换第一个，all替换全部
+
+	ES13:
+		1.方法.at():取代索引[]
+		2.Object.hasOwn(obj,xxx):对象属性判断  替代Object.prototype.hasOwnProperty
+			后者不严谨（如果obj.__proto__ = null）
+		3.New members of classers
+			初始化class对象public属性，不用this，写在constructor外
+			
+			以前：下划线变量为程序员之间默认的私有属性
+			现在：#开头为私有属性，外界不能访问
+
+			静态属性： static xxx
+			静态代码块 static {}
+
+
+Proxy-Reflect详解
+监听对象的操作：
+	vue2响应式原理：
+		const obj = { name: 'obj' }
+		const keys = Object.keys(obj)
+		for (const key of keys) {
+			let value = obj[key]
+			Object.defineProperty(obj,key,{
+				set: function(newValue) {
+					console.log(`${key}设值:`,newValue)
+					value = newValue
+				},
+				get: function() {
+					console.log(`${key}获取`) 
+					return value
+				}
+			})	
+		}
+		console.log(obj.name)
+		obj.name = 'xxx'
+
+Proxy类 代理监听:
+	const objProxy = new Proxy(target,handler)
+		监听：在handler中添加捕获器
+		13个trap捕获器: ！！！重写的话操作也要自己写，如：target.key = value
+			get函数-params：	target(目标对象obj)
+						property(捕获属性key)
+						receiver(代理对象)
+			set函数-params:	target(目标对象obj)
+						property(捕获属性key)
+						value(新属性值)
+						receiver(代理对象)
+			deleteProperty函数:target(目标对象obj)
+						key
+			has函数：		target
+						key
+	监听函数
+			apply函数
+			constructor函数
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

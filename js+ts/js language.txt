@@ -128,6 +128,8 @@
 			.substring(start,end)
 
 		.replace(旧，新)  只会替换第一个  可与循环搭配
+		.trim()    去除字符串两边的空格（trimStart()/trimEnd()）
+		.padStart(x,y)  用y补齐至x位
 		
 **		字符串变数组：var arr =str.split("断隔符")
 		数组变字符串：1.toString()   	 arr.toString();

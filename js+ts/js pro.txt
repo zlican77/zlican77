@@ -997,51 +997,355 @@ Promise后有三种
 也可以将.catch()放入.then中
 	promise.then((res) = {}, (err) => {})
 
+Promise.then()方法的返回值是一个Promise
+promise.then().then().then().catch().finally()------链式调用
+第二个then是等待第一个then返回值的决议，并以第一个then的return为resolve参数
+
+promise.catch().then()
+
+throw new Error(Message),抛出异常，会被.catch捕获--且中断函数
+
+finally无论是兑现状态还是拒绝状态都会调用
+
+
+Promise类方法
+Promise.resolve()，直接promise调用resolve结果(reject类方法一样)
+	const promise = Promise.resolve(data)    //new 并且resolve(data)
+	promise.then(res => {})
+
+Promise.all([x,x,x]).then().catch()  将多个结果集中返回
+	全部x resolve成功，执行then，否则catch
+
+Promise.allSettled([x,x,x]).then()  一定执行then，返回对象的数组包含status
+
+Promise.race([x,x,x]).then().catch()返回第一个状态结果
+
+Promise.any([x,x,x]).then().catch()返回第一个resolve状态结果
+
+
+Iterator/Generator  迭代器/生成器
+
+const names = ['a','b','c']
+let index = 0
+const iterator = {		//迭代器（对象）
+	next: function() {
+		//done: boolean
+		//value: 值/undefined
+		if (index < names.length) {
+			return { done: false, value: names[index++] }
+		} else {
+			return { done: true }
+		}
+	}
+}
+
+
+可迭代对象：本身携带迭代器方法
+
+1.特定函数：[Symbol.iterator]
+2.该函数需要返回一个迭代器（作用于该对象）
+const infos = {
+	friends: ['a','b','c']
+	[Symbol.iterator]() {
+	let index = 0
+	const infosIterator = {
+		next: function() {
+			if (index < infos.friends.length) {
+				return { done: false, value: infos.friends[index++]}
+			} else {
+				return { done: true }
+			}
+			}
+		}
+	return infosIterator
+	}
+}
+
+        const obj = {
+          name: 'abcc',
+          age: 18,
+          tender: 'man',
+          [Symbol.iterator]: function() {
+            const items = Object.entries(obj) 
+            let index = 0
+            const iterator = {
+              next: () => {
+                if (index < items.length ) {
+                  return { done: false, value: items[index++] }
+                } else {
+                  return { done: true }
+                }
+              }
+            }
+            return iterator
+          }
+        }
+        for (item of obj ) {
+          const [ key, value ] = item
+          console.log(key, value)
+        }
+
+可迭代对象应用于： for...of.../ 展开语法.../ 解构语法/ 作为传入参数 
+
+遍历break/return/throw--->迭代器中断return: () => { xxx; return {}}
+
+
+生成器：函数控制、使用的方案，控制函数的继续和暂停，一种特殊的迭代器
+1.function后加个*
+2.通过yield控制函数执行流程
+3.返回值是一个Generator生成器(迭代器)，函数内容不会执行
+	function* foo() {
+		console.log('a')
+		const info = yield '第一次'
+		console.log('b',info)
+		yield ‘第二次’
+		console.log('c')
+	}
+	const generator = foo()
+	generator.next()
+	generator.next('第二次')
+	generator.next()
+
+--------
+	const names = ['a','b','c']
+	function* createArrayIterator(arr) {
+		yield* arr		//*语法糖，arr等可迭代对象
+		}
+	const namesIretator = createArrayIterator(names)
+	console.log(namesIterator.next())
+	console.log(namesIterator.next())
+	console.log(namesIterator.next())
+
+--------转化成可迭代对象
+	class Person {
+		constructor(name,age,height,friends) {
+			this.name = name
+			this.age = age 
+			this.height = height
+			this.friends = friends
+		}
+		
+		*[Symbol.iterator]() {
+		yield* this.friends
+		}
+	}
+
+	const p = new Person('why', 18, 1.88, ['a','b','c'])
+	for (const item of p) {
+		console.log(item)
+	}
+
+异步处理方案
+	方案1
+          function pro(res) {
+            return new Promise((resolve) => {
+              setTimeout(() => {resolve(res);},2000)
+            })
+          }
+
+          function quest() {
+	    	pro('aaa').then(res1 => {
+            	console.log(res1)
+            	return pro(res1 + 'bbb')
+          	}).then(res2 => {
+            	console.log(res2)
+            	return pro(res2 + 'ccc')
+          	}).then(res3 => {
+            	console.log(res3)
+          	})}
+	    quest()
+
+------------原生网络请求
+      function pro(res) {
+        return new Promise((resolve) => {
+            setTimeout( () => {
+              resolve(res);
+            }, 2000)
+        })
+      }
+      
+      function* request() {
+        const res1 = yield pro('aaa')
+        console.log(res1)
+
+        const res2 = yield pro(res1 + 'bbb')
+        console.log(res2)
+
+        const res3 = yield pro(res2 + 'ccc')
+        console.log(res3)
+      }
+
+	----可写成递归
+      const generator = request()
+      generator.next().value.then(res1 => {
+        generator.next(res1).value.then(res2 => {
+          generator.next(res2).value.then(res3 => {
+            generator.next(res3)
+          })
+        })
+      })
+
+---------
+异步函数async function    //asynchronous 异步
+和普通函数区别： 
+1.一定返回Promise
+	返回普通值时：return 'aaa' === return Promise.resolve('aaa')
+			没写=>return undefined === return Promise.resolve(undefined)
+	返回Promise时： new Promise覆盖
+	返回thenable对象：
+		return {
+			then: function(resolve, reject) {
+				setTimeout(() => { resolve('aaa') }, 2000)
+			}	
+		}
+
+2.如果异步函数中有抛出异常
+	异常会被作为reject()参数传递,被Promise.catch()捕获
+
+3.await:只能在异步函数中使用
+	await后面一般跟Promise，暂停函数执行至Promise状态确定，返回包含的结果
+		Promise.reject()抛出的异常可被捕获     
+
+	function pro(res) {
+        return new Promise((resolve) => {
+            setTimeout( () => {
+              resolve(res);
+            }, 2000)
+        })
+      }
+      
+	async function getData() {
+		const res1 = await pro('a')
+		console.log(res1) 
+		const res2 = await pro(res1 + 'b')
+		console.log(res2)	
+	}
+	
+	getData().catch((err) => { console.log(err) })
+
+
+进程Process和线程thread
+	一个进程中可能会包含多线程
+	单核CPU会在多个进程之间快速切换
+
+
+
+JS是单线程，js的容器进程： 浏览器或node--js引擎
+	浏览器是多进程的（一个页面一个进程）防止页面卡死影响浏览器，页面中又有多线程
+
+事件队列->浏览器事件循环
+	计时等耗时操作由浏览器单独开线程执行，计时后函数进入事件队列
+	Ajax请求、浏览器事件监听也是浏览器将函数放入事件队列中
+	事件队列在一轮执行上下文执行完毕后按队列顺序进入执行上下文
+	执行上下文有可能再让浏览器开线程
+
+任务队列中的宏任务和微任务
+	定时器等产生的函数任务为宏任务，加入宏任务队列
+	Promise的立即执行回调函数会在js线程执行，本身不会传入事件队列，resolve()的then
+		调用函数会被添加到微任务队列中
+	1.宏任务队列macrotask queue: ajax、setTimeout、setInternal、DOM监听、UI Rendering等
+	2.微任务队列microtask queue: Promise的then回调、queueMicrotask()、await以下代码(then的语法糖)等
+	3.在执行每一个宏任务之前一定会保证微任务队列是清空的
+
+
+错误处理方案throw ：后续代码都不会执行
+	throw +错误信息
+		数据类型：number/string等
+		对象：{xxx}
+		new 构造函数=>系统Error类
+			throw new Error(xxx):返回调用栈和错误信息
+Error包含三个属性：
+	message/name/stack
+	
+异常捕获方式
+	异常通过调用栈不断向外层抛出，而影响代码执行
+	try {} catch() {} finally {}捕获异常
+
+Storage
+	方法：xxxStorage.setItem(name,value)
+		xxxStorage.getItem(name)
+	localStorage:本地存储
+	sessionStorage:会话存储
+	二者区别：
+		1.关闭网页重新打开，local会存储，session不会存储
+		2.进行页面内跳转时,两者都会保存（session作用体现，不需要本地保存的会话数据）
+		3.进行页面外跳转时(target='_blank'),session不会保存
+
+	属性方法补充：
+		1.length获取存储的个数
+		2.key()根据索引获取key
+		3.removeItem()移除某个storage
+		4.clear()清空
 
 
 
 
 
+正则表达式regular expression  缩写regex/RE
+	进行字符串操作：字符串匹配利器，搜索、获取、替代
+	组成：模式规则和修饰符(ig等）
+创建正则表达式：
+	类RegExp('aaa','ig')
+	/aaa/ig 
+	 
+	*  /^a{5,8}$/
+	1.exec() 方法在一个指定字符串中执行一个搜索匹配。返回一个结果数组或 null
+	2.test() 方法执行一个检索，用来查看正则表达式与指定的字符串是否匹配。返回 true 或 false		（看是否匹配）
+--字符串 
+	3.search方法，返回索引值
+	4.replace/replaceAll
+	5.split
+	6.字符串的match方法（ig下返回全部匹配的数组形式，i下返回单个对象信息），matchAll方法（返回迭代器）		看结果）
+	
+修饰符： 
+	g--global全部
+	i--ignore忽略大小写 
+	m--multiple多行匹配
+
+规则--字符类：特殊符号，匹配特定集中的任何符号
+	\d:0-9数字
+	\s:空格
+	\w:单元素（下划线、数字、大小写字母等）
+	.:任意字符
+	\大写反向类：\D,\S,\W
+锚点
+	^以其开头
+	$以其结尾
+词边界：
+	/\bxxx\b/ig
+转义字符：
+	常见需要转义的字符：[] \ $ . | ? * + ()
+集合（Sets）
+	[12345]
+	[1-5]
+量词：
+	{3，5}：3到5个
+	缩写：
+		+：一个或多个 === {1，}
+		?:零个或一个  === {0，1}
+		*：零个或多个	=== {0，}
+贪婪模式和惰性模式
+	贪婪：/《.+》/
+	惰性：/《.+?》/  量词后面加个？变成惰性模式
+
+捕获组：()当成一个整体,且作为结果数组的单独项
+	/《(.+?)》/
+        const books = "《环境遍历》旧时时光《js高阶》《雅思托福》《二合一》"
+        const re1 = /《(.+?)》/ig
+
+        const iterator = books.matchAll(re1)
+        for (const book of iterator) {
+            console.log(book[1])
+        }
+非捕获组：(?:),当成一个整体，不希望出现在结果中
+
+或： |
+ 
+正则详情网址https://c.runoob.com/front-end/854/
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+防抖：降低网络请求频率，延迟
+节流 
 
 
 

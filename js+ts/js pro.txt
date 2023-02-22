@@ -1344,8 +1344,71 @@ Storage
 正则详情网址https://c.runoob.com/front-end/854/
 
 
-防抖：降低网络请求频率，延迟
-节流 
+防抖：对频率触发特别高的事件进行降低频率，延迟(underscore  _.debounce())
+手写防抖： 
+//基础，核心思想：对函数进行定时延时操作，并去除前一次的延时定时
+    请输入数字：<input type="text">
+    <script>
+        function icdebounce(func, delay) {
+            let timer = null;
+            const _debounce = function () {
+                if (timer) {
+                    clearTimeout(timer);	//清除上一次延时操作
+                }
+                timer = setTimeout(() => {
+                    func.call(this)
+                    timer = null
+                }, delay)
+            }
+            return _debounce
+        }        
+    </script>
+    <script>
+        let num = 1
+        const inputEl = document.querySelector("input");
+        inputEl.oninput = icdebounce(function() {
+            console.log(`发出${num++}次`,this.value)
+        },1000)
+    </script>
+
+
+额外功能补充：调用函数的参数如event传入；取消功能；立即执行；获取返回值(Promise运用)
+    请输入数字：<input type="text">
+    <button class="cancel">取消</button>
+    <script>
+        function icdebounce(func, delay) {
+            let timer = null;
+            const _debounce = function (...args) {
+                if (timer) {
+                    clearTimeout(timer);
+                }
+                timer = setTimeout(() => {
+                    func.call(this,...args)
+                    timer = null
+                }, delay)
+            }
+
+            _debounce.cancel = function () {
+                if (timer) {
+                    clearTimeout(timer)
+                }
+            }
+            return _debounce
+        }        
+    </script>
+    <script>
+        let num = 1
+        const inputEl = document.querySelector("input");
+        const debounce = icdebounce(function(event) {
+            console.log(`发出${num++}次`,this.value,event)
+        },3000)
+        inputEl.oninput = debounce
+
+        const butEl = document.querySelector('.cancel')
+        butEl.onclick = function() {
+            debounce.cancel()
+        }
+    </script>
 
 
 
@@ -1354,11 +1417,7 @@ Storage
 
 
 
-
-
-
-
-
+ 
 
 
 

@@ -1344,7 +1344,8 @@ Storage
 正则详情网址https://c.runoob.com/front-end/854/
 
 
-防抖：对频率触发特别高的事件进行降低频率，延迟(underscore  _.debounce())
+防抖：对事件进行延迟执行
+	如果在事件触发的n秒又触发了这个事件，那就以新事件的事件为准，n秒后才执行。(underscore  _.debounce())
 手写防抖： 
 //基础，核心思想：对函数进行定时延时操作，并去除前一次的延时定时
     请输入数字：<input type="text">
@@ -1376,15 +1377,22 @@ Storage
     请输入数字：<input type="text">
     <button class="cancel">取消</button>
     <script>
-        function icdebounce(func, delay) {
+        function icdebounce(func, delay, immediate = false) {
             let timer = null;
+            let isInvoke = false
             const _debounce = function (...args) {
                 if (timer) {
                     clearTimeout(timer);
                 }
+                if (immediate && !isInvoke) {
+                    func.apply(this, args);
+                    isInvoke = true;
+                    return
+                }
                 timer = setTimeout(() => {
                     func.call(this,...args)
                     timer = null
+                    isInvoke = false
                 }, delay)
             }
 
@@ -1401,7 +1409,7 @@ Storage
         const inputEl = document.querySelector("input");
         const debounce = icdebounce(function(event) {
             console.log(`发出${num++}次`,this.value,event)
-        },3000)
+        },2000,true)
         inputEl.oninput = debounce
 
         const butEl = document.querySelector('.cancel')
@@ -1410,14 +1418,333 @@ Storage
         }
     </script>
 
+节流throttle:限制一定时间内事件的触发频率
+基础节流
+    请输入数字：<input type="text">
+    <script>
+        function icthrottle(fn,interval) {
+            let startTime = 0
+            const _throttle = function (...args) {
+                const nowTime = new Date().getTime()
+                const waitTime =  interval -  (nowTime - startTime) 
+                if (waitTime <= 0) {
+                    fn.apply(this,args)
+                    startTime = nowTime
+                }
+            }
+            return _throttle
+        }
+    </script>
+    <script>
+        let num = 1
+        const inputEl = document.querySelector("input");
+        inputEl.oninput = icthrottle(function(event) {
+            console.log(`第${num++}次`,this.value,event)
+        },1000)
+    </script>
+额外补充：立即执行的控制；尾部执行的控制 
+    请输入数字：<input type="text">
+    <script>
+        function icthrottle(fn,interval, leading = false, trailing = false) {
+            let startTime = 0
+            let timer = null
+            const _throttle = function (...args) {
+                const nowTime = new Date().getTime()
+                if (!leading && startTime ===0 ) {
+                    startTime = nowTime
+                }
+                const waitTime =  interval -  (nowTime - startTime) 
+                if (waitTime <= 0) {
+                    if (timer) clearTimeout(timer)
+                    fn.apply(this,args)
+                    startTime = nowTime
+                    timer = null
+                    return
+                }
+                if (trailing && !timer) {
+                    timer = setTimeout(() => {
+                        fn.apply(this,args)
+                        startTime = new Date().getTime()
+                        timer = null
+                        console.log('timer')
+                    }, waitTime)
+                }
+            }
+            return _throttle
+        }
+    </script>
+    <script>
+        let num = 1
+        const inputEl = document.querySelector("input");
+        inputEl.oninput = icthrottle(function(event) {
+            console.log(`第${num++}次`,this.value,event)
+        },1000, true, true)
+    </script>
 
 
-
-
-
-
-
+手写深拷贝-事件总线 
+浅拷贝：.../Object.assign() 等
+深拷贝：JSON.parse(JSON.stringify(obj))
+	存在缺陷：不允许函数拷贝，不允许Symbol拷贝，不允许循环拷贝
  
+深拷贝基本实现（数组，对象的拷贝）
+    <script>
+        function isObject(value) {
+            const valueType = typeof value;
+            return (value != null) && (valueType === 'object' || valueType === 'function')
+            }
+        function deepCopy(originInvalue) {
+            if (!isObject(originInvalue)) {
+                return originInvalue;
+            }
+            const newObj = Array.isArray(originInvalue) ? [] : {}
+            for (const key in originInvalue) {
+                newObj[key] = deepCopy(originInvalue[key]);
+            }
+            return newObj;
+        }
+        const info = {
+            name: 'why',
+            age: 18,
+            friend: {
+                name: 'kobe',
+                address: {
+                    name: '洛杉矶',
+                    detail: '斯台普斯中心'
+                }
+            }
+        }
+        const newObj = deepCopy(info);
+        info.friend.address.detail = 'change'
+        console.log(info)
+        console.log(newObj)
+
+        const arr = [info, info, [1,1,1]]
+        const newArr = deepCopy(arr)
+        console.log(newArr) 
+    </script>
+
+其他类型深拷贝的实现： Set/Map/Function/Symbol  和  循环引用的处理 
+ 用到 instanceof 判断类型
+
+
+手写事件总线： eventBus 
+基础实现
+    <button type="button">beat</button>
+    <script>
+        class ICEventBus {
+            constructor() {
+                this.eventMap = {}
+            }
+            on(eventName, eventFn) {
+                let eventFns = this.eventMap[eventName]
+                if (!eventFns) {
+                    eventFns = [] 
+                    this.eventMap[eventName] = eventFns
+                }
+                eventFns.push(eventFn)
+            }
+            off(eventName, eventFn) {
+                let eventFns = this.eventMap[eventName]
+                if (!eventFns) return
+                for (let i = 0; i < eventFns.length; i++) {
+                    const fn = eventFns[i]
+                    if (fn === eventFn) {
+                        eventFns.splice(i, 1)
+                        break
+                    }
+                }
+                if (eventFns.length === 0) {
+                    delete this.eventMap[eventName]
+                }
+            }
+            emit(eventName, ...args) {
+                let eventFns = this.eventMap[eventName]
+                if (!eventFns) return 
+                eventFns.forEach(fn => {
+                    fn(...args)
+                })
+            }
+        }
+        const eventBus = new ICEventBus(); 
+        //aside.vue组件中监听事件
+        eventBus.on('navclick', (...args) => {
+            console.log('aside 收到',...args)
+        })
+
+        const click = () => {
+            console.log('aside 2收到')
+        }
+        eventBus.on('navclick', click)
+        //nav.vue 
+        const Btn = document.querySelector('button')
+        Btn.onclick = () => {
+            console.log('nav beat')
+            eventBus.emit('navclick',19,'man')
+        }
+
+        setTimeout(() => {
+            eventBus.off('navclick', click)
+        }, 2000)
+    </script>
+
+
+网络请求 
+	客户端渲染（前后端分离）
+
+AJAX:只请求数据，无页面刷新，辅助前端渲染，前端动态路由
+	异步操作，不会阻塞js运行
+
+HTTP
+请求：请求行（方法+URI+协议版本）+请求头+请求内容
+响应：响应行（协议版本+状态码+状态码原因短语）+响应头+响应内容
+	对于相同路径的执行操作方式：
+		get-只用于获取数据
+		post-提交数据
+		patch-修改数据
+		delete-删除数据
+请求头：
+	content-type是这次请求携带的数据的类型：
+	application/x-www-form-urlencoded: 以&分隔键值对，以=分隔间值
+	application/json: 表示是一个json类型
+	text/plain: 表示文本类型
+	application/xml: 表示xml类型
+	multipart/form-data: 表示上传文件
+ 	content-length文件的大小长度 
+	keep-alive保持连接
+	accept-encoding支持的文件压缩格式：.js->.gz
+	accept能接受的数据文件格式
+ 	user-agent用户代理
+
+响应状态码：200、201、301、401、403、404、500、503
+		  ok  post url   
+响应头：
+	Access-Control-Allow-Origin:跨域
+	Connection： keep-alive
+	Content-length:长度
+	Content-Type
+	Date时间
+	Keep-Alive: timeout
+	Vary代理服务器
+
+js中发送网络请求 -XML/XHR、Fetch/XHR
+	new 对象：XMLHttpRequest类	const xhr = new XMLHttpRequest
+	监听对象状态				xhr.onreadystatechange = function() {
+							console.log(xhr.response)  ... }
+	配置网络请求				xhr.open(methods,URL） 
+	发送网络请求send
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1628,27 +1628,53 @@ HTTP
 	Vary代理服务器
 
 js中发送网络请求 -XML/XHR、Fetch/XHR
+Ajax请求
 	new 对象：XMLHttpRequest类	const xhr = new XMLHttpRequest
 	监听对象状态				xhr.onreadystatechange = function() {
 							console.log(xhr.response)  ... }
 	配置网络请求				xhr.open(methods,URL） 
 	发送网络请求send
 
+    <script>
+       const xhr = new XMLHttpRequest();
+       xhr.onreadystatechange = () => {		//宏任务
+        if (xhr.readyState !== XMLHttpRequest.DONE) return
+
+        const resJson = JSON.parse(xhr.response)    //xhr.responseType = 'json'
+        const banners = resJson.data.banner 
+        console.log(banners)
+       }
+
+       xhr.open('get','http://123.207.32.32:8000/home/multidata', async)
+       xhr.send()
+    </script>
+
+监听XHR状态变化 
+	0： 代理被创建
+	1： open被调用
+	2： send被掉用，头部可获得
+	3： 下载响应中 
+	4： 下载完成
+	
+XMR其他监听 onload、onerror
+
+GET/POST的传递参数
+	1.GET请求的query参数:?xxx=xxx&xxx=xxx
+	2.POST请求的urlencoded                                                                                   
+       xhr.open('post','http://123.207.32.32:1888/02_param/posturl', true);
+       xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')	//告诉服务器以什么格式传递参数
+       xhr.send('name=why&age=19')
+	3.POST传递表单FormData格式
+	4.POST请求的json格式
+
+ajax网络请求封装（对xhr的封装）
+
+Fetch函数和Fetch API
+
+XHR/Fetch上传文件 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
 
 
 

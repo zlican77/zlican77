@@ -4,7 +4,7 @@ python         		begin:22/10/16，end:22/11/23
 algorithm      		begin:22/11/25，end:22/12/17
 html/css       		begin:22/12/17，end:22/12/26
 js				begin:22/12/26，end:23/01/04				  
-js pro			begin:23/01/05：03-14-11
+js pro			begin:23/01/05：end:23/03/04
 vue3				begin:23/01/11：06-11-13（8，9）
 node/webpack/git		begin:23/01/16，end:23/01/23
 web crowler			begin:23/02/04：p11/100

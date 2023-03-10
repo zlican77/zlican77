@@ -5,18 +5,17 @@ algorithm      		begin:22/11/25，end:22/12/17
 html/css       		begin:22/12/17，end:22/12/26
 js				begin:22/12/26，end:23/01/04				  
 js pro			begin:23/01/05：end:23/03/04
-vue3				begin:23/01/11：06-11-13（8，9）
+vue3				begin:23/01/11：06-9-10-07min
 node/webpack/git		begin:23/01/16，end:23/01/23
 web crowler			begin:23/02/04：p11/100
 ts				begin
 design patterns
 react
-English 4   		begin:23/02/08：770/2173
+English 4   		begin:23/02/08：1010/2173
 English 6
 
 wait：
-	js pro-14	ing
-	vue-pinio
+	vue-pinia
 	less
 
 

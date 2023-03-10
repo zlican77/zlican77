@@ -1,4 +1,4 @@
-vue:渐进式js框架，声明式编程
+ vue:渐进式js框架，声明式编程
 <script src='https://unpkg.com/vue@next'></script>
 const app = Vue.createApp({
 	template: '<h2> hello world</h2>'
@@ -419,6 +419,79 @@ router嵌套children：[{},{}]
 
 :deep(class){},在style作用域里使样式向子组件穿透生效
 	组件库的使用
+
+动态路由:
+	动态添加路由：router.addRoute({path: xxx. component: xxx})	
+	添加二级路由等：特殊vip页面
+
+路由守卫:router.beforeEach
+	进行任何的路由跳转之前，传入的beforeEach中的函数都会被回调
+登入逻辑的导航守卫
+
+
+Vuex/pinia
+
+状态管理：对数据的管理
+	store 
+
+单一状态树SSOT：single source of truth
+	modules
+
+vuex: state/getters/mutations/actions/modules
+
+Pinia
+	1.mutations不再存在
+	2.支持TS
+	3.modules不再存在
+	4.命名空间不再存在
+	
+流程：
+	index.js中创建pinia并引入main.js中vue实例use(pinia)
+	在众多的store中引入defineStore,使用并导出store函数
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 隐藏tabbar
 方法一	v-if

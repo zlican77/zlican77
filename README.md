@@ -2,18 +2,8 @@
 ==
 👋Hello,this is github belonged to ican-7  
 ✨Certainly, is me✨  
-😄About me: 就读于*合肥工业大学*  
 >⚡first, I’m an active boy  
->⚡live: Study in HeFei University of Technology  
 >⚡Last, I feel much interested in coding  
-
-process:
---
-* Python language：22.10.16-22.11.23
-* algorithm：22.11.25-22.12.17  
-* node/webpack/git：23.01.16-23.01.23
-* html/css/js：22.12.17-23.03.04
-* vue3：23.01.11-至今
 
 believe：
 --

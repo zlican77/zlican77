@@ -2,7 +2,7 @@
 
 ## 全栈工程师——zlican, ican！
 ==
-👋Hello,this is github belonged to ican-7  
+👋Hello,this is github belonging to Ling
 ✨Certainly, is me✨  
 >⚡first, I’m an active boy  
 >⚡Last, I feel much interested in coding  

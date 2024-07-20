@@ -10,7 +10,7 @@
 ### Code Language
 
 ![](https://github-readme-stats.vercel.app/api/top-langs/?username=zlican77&layout=compact&langs_count=6)
- <img align="right" alt="GIF" src="./image/code.gif" width="430" height="298" />
+ <img align="right" alt="GIF" src="./image/code.gif" width="430" height="100%" />
 
 
 ### **技术栈:**
@@ -22,6 +22,5 @@
 <a href="https://webpack.js.org/"><code><img height="20" src="./image/webpack.svg"></code></a>
 <a href="https://www.docker.com"><code><img height="20" src="./image/docker.png"></code></a>
 
-Believe：
---
+### **Believe**：
 *🌱Let's create an excepted future together!*  

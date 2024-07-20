@@ -1,7 +1,6 @@
 <img align="right" src="https://count.getloli.com/get/@:zlican77?theme=rule88">
 
 ## 全栈工程师——zlican, ican！
-==
 👋Hello,this is github belonging to Ling
 ✨Certainly, is me✨  
 >⚡first, I’m an active boy  

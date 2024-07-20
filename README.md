@@ -8,7 +8,7 @@ zlican, ican！
 believe：
 --
 *🌱Let's create an excepted future together!*  
-*🌱心之所向，当一往无前！*
+
 <!--
 - 🔭👯🤔 💬 📫 
 -->

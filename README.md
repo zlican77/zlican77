@@ -3,7 +3,7 @@
 ## 全栈工程师——zlican, ican！
 👋Hello,this is github belonging to Ling
 ✨Certainly, is me✨  
->⚡first, I’m an active boy  
+>⚡First, I’m an active boy  
 >⚡Last, I feel much interested in coding  
 
 ### Code Language

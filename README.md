@@ -1,4 +1,4 @@
-## 全干工程师——zlican, I can！
+## zlican, I can！
 👋Hello,this is github belonging to Ling
 ✨Certainly, is me✨  
 >⚡First, I’m an active boy  
